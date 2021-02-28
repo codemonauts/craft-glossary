@@ -1,0 +1,12 @@
+{% extends "_layouts/elementindex" %}
+{% set title = "Terms" %}
+{% set elementType = 'codemonauts\\glossary\\elements\\Term' %}
+{% set selectedSubnavItem = 'terms' %}
+
+{% block actionButton %}
+    {% if craft.glossary.glossaries.count() %}
+    <div class="buttons">
+        <a href="{{ url('glossary/term/new') }}" class="btn submit add icon">Add Term</a>
+    </div>
+    {% endif %}
+{% endblock %}

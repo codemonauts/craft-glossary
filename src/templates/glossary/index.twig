@@ -1,0 +1,10 @@
+{% extends "_layouts/elementindex" %}
+{% set title = "Glossaries" %}
+{% set elementType = 'codemonauts\\glossary\\elements\\Glossary' %}
+{% set selectedSubnavItem = 'glossaries' %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <a href="{{ url('glossary/glossary/new') }}" class="btn submit add icon">Add Glossary</a>
+    </div>
+{% endblock %}
