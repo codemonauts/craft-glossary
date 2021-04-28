@@ -1,0 +1,42 @@
+{
+  "name": "codemonauts/craft-glossary",
+  "description": "A glossary for Craft CMS.",
+  "version": "1.0.0",
+  "type": "craft-plugin",
+  "keywords": [
+    "craft",
+    "cms",
+    "craftcms",
+    "craft-plugin",
+    "document",
+    "glossary"
+  ],
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "codemonauts",
+      "homepage": "https://codemonauts.com"
+    }
+  ],
+  "support": {
+    "source": "https://github.com/codemonauts/craft-glossary",
+    "docs": "https://github.com/codemonauts/craft-glossary/blob/master/README.md",
+    "issues": "https://github.com/codemonauts/craft-glossary/issues"
+  },
+  "require": {
+    "craftcms/cms": "^3.5.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "codemonauts\\glossary\\": "src/"
+    }
+  },
+  "extra": {
+    "handle": "glossary",
+    "class": "codemonauts\\glossary\\Glossary",
+    "name": "Glossary",
+    "description": "A glossary for Craft CMS.",
+    "changelogUrl": "https://github.com/codemonauts/craft-glossary/blob/master/CHANGELOG.md",
+    "documentationUrl": "https://github.com/codemonauts/craft-glossary/blob/master/README.md"
+  }
+}
