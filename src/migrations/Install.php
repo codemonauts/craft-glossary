@@ -16,7 +16,7 @@ class Install extends Migration
             'handle' => $this->string()->notNull(),
             'default' => $this->boolean()->notNull(),
             'termTemplate' => $this->string()->null(),
-            'contentTemplate' => $this->string()->notNull(),
+            'tooltipTemplate' => $this->string()->notNull(),
             'css' => $this->string(),
             'script' => $this->string(),
             'fieldLayoutId' => $this->integer()->notNull(),

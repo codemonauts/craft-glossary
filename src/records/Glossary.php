@@ -15,7 +15,7 @@ use yii\db\ActiveQueryInterface;
  * @property string $handle The handle for the glossary.
  * @property bool $default If this is the default glossary to use.
  * @property string $termTemplate The template to use for rendering the terms inline.
- * @property string $contentTemplate The template to use for rendering the terms inline.
+ * @property string $tooltipTemplate The template to use for rendering the terms inline.
  * @property string $css A CSS path to load when a glossary has been used on the page.
  * @property string $script A script path to load when a glossary has been used on the page.
  * @property int $fieldLayoutId The ID of the field layout.

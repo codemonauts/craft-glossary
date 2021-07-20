@@ -53,7 +53,7 @@ class GlossaryQuery extends ElementQuery
             'glossary_glossaries.handle',
             'glossary_glossaries.default',
             'glossary_glossaries.termTemplate',
-            'glossary_glossaries.contentTemplate',
+            'glossary_glossaries.tooltipTemplate',
             'glossary_glossaries.css',
             'glossary_glossaries.script',
             'glossary_glossaries.fieldLayoutId',

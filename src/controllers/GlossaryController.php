@@ -69,7 +69,7 @@ class GlossaryController extends Controller
         $glossary->handle = $request->getBodyParam('handle');
         $glossary->default = (bool)$request->getBodyParam('default');
         $glossary->termTemplate = $request->getBodyParam('termTemplate');
-        $glossary->contentTemplate = $request->getBodyParam('contentTemplate');
+        $glossary->tooltipTemplate = $request->getBodyParam('tooltipTemplate');
         $glossary->css = $request->getBodyParam('css');
         $glossary->script = $request->getBodyParam('script');
 

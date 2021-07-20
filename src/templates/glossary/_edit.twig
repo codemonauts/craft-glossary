@@ -81,12 +81,12 @@
         }) }}
 
         {{ forms.autosuggestField({
-            label: 'Content Template',
-            id: 'contentTemplate',
-            name: 'contentTemplate',
-            value: glossary.contentTemplate,
+            label: 'Tooltip Template',
+            id: 'tooltipTemplate',
+            name: 'tooltipTemplate',
+            value: glossary.tooltipTemplate,
             suggestions: craft.cp.getTemplateSuggestions(),
-            errors: glossary.getErrors('contentTemplate'),
+            errors: glossary.getErrors('tooltipTemplate'),
             instructions: "The template to use for rendering the content of the tooltips.",
             required: true,
         }) }}

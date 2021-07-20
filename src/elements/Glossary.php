@@ -22,7 +22,7 @@ class Glossary extends Element
     public $handle;
     public $default;
     public $termTemplate;
-    public $contentTemplate;
+    public $tooltipTemplate;
     public $css;
     public $script;
     public $fieldLayoutId;
@@ -116,7 +116,7 @@ class Glossary extends Element
             'handle' => 'Handle',
             'default' => 'Default',
             'termTemplate' => 'Term template',
-            'contentTemplate' => 'Content template',
+            'tooltipTemplate' => 'Tooltip template',
             'css' => 'CSS',
             'script' => 'Script',
             'counter' => '# of Terms',
@@ -212,7 +212,7 @@ class Glossary extends Element
         $record->handle = (string)$this->handle;
         $record->default = (bool)$this->default;
         $record->termTemplate = $this->termTemplate;
-        $record->contentTemplate = $this->contentTemplate;
+        $record->tooltipTemplate = $this->tooltipTemplate;
         $record->css = $this->css;
         $record->script = $this->script;
         $record->fieldLayoutId = (int)$this->fieldLayoutId;
@@ -241,7 +241,7 @@ class Glossary extends Element
     {
         $rules = parent::defineRules();
 
-        $rules[] = [['title', 'handle', 'default', 'contentTemplate'], 'required'];
+        $rules[] = [['title', 'handle', 'default', 'tooltipTemplate'], 'required'];
 
         return $rules;
     }
