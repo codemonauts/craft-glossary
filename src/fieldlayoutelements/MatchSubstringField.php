@@ -36,7 +36,7 @@ class MatchSubstringField extends StandardField
     /**
      * @inheritdoc
      */
-    public $tip = 'Should the term and the synonyms match also as substrings or only as full words?';
+    public $instructions = 'Should the term and the synonyms match also as substrings or only as full words?';
 
     /**
      * @inheritdoc
@@ -56,7 +56,7 @@ class MatchSubstringField extends StandardField
     /**
      * @inheritdoc
      */
-    public function fields()
+    public function fields(): array
     {
         $fields = parent::fields();
 
@@ -73,7 +73,7 @@ class MatchSubstringField extends StandardField
     /**
      * @inheritdoc
      */
-    public function defaultLabel(ElementInterface $element = null, bool $static = false)
+    public function defaultLabel(ElementInterface $element = null, bool $static = false): ?string
     {
         return Craft::t('glossary', 'Match as substring?');
     }
@@ -105,7 +105,7 @@ class MatchSubstringField extends StandardField
     /**
      * @inheritdoc
      */
-    protected function inputHtml(ElementInterface $element = null, bool $static = false)
+    protected function inputHtml(ElementInterface $element = null, bool $static = false): ?string
     {
         return Craft::$app->getView()->renderTemplate('_includes/forms/lightswitch', [
             'id' => $this->id(),

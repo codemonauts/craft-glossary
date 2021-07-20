@@ -31,7 +31,7 @@ class SynonymsField extends StandardTextField
     /**
      * @inheritdoc
      */
-    public $tip = 'Comma separated list of Synonyms of the main term to also process.';
+    public $instructions = 'Comma separated list of Synonyms of the main term to also process.';
 
     /**
      * @inheritdoc
@@ -51,7 +51,7 @@ class SynonymsField extends StandardTextField
     /**
      * @inheritdoc
      */
-    public function fields()
+    public function fields(): array
     {
         $fields = parent::fields();
 
@@ -68,7 +68,7 @@ class SynonymsField extends StandardTextField
     /**
      * @inheritdoc
      */
-    public function defaultLabel(ElementInterface $element = null, bool $static = false)
+    public function defaultLabel(ElementInterface $element = null, bool $static = false): ?string
     {
         return Craft::t('glossary', 'Synonyms');
     }

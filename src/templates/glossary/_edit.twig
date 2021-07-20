@@ -71,13 +71,23 @@
         }) }}
 
         {{ forms.autosuggestField({
-            label: 'Template',
-            id: 'template',
-            name: 'template',
-            value: glossary.template,
+            label: 'Term Template',
+            id: 'termTemplate',
+            name: 'termTemplate',
+            value: glossary.termTemplate,
+            errors: glossary.getErrors('termTemplate'),
+            instructions: "The template to use for rendering every single term inline. If empty, the plugin's default will be used.",
+            required: false,
+        }) }}
+
+        {{ forms.autosuggestField({
+            label: 'Content Template',
+            id: 'contentTemplate',
+            name: 'contentTemplate',
+            value: glossary.contentTemplate,
             suggestions: craft.cp.getTemplateSuggestions(),
-            errors: glossary.getErrors('template'),
-            instructions: "The template to use for rendering every single term. If empty, the plugin's default will be used.",
+            errors: glossary.getErrors('contentTemplate'),
+            instructions: "The template to use for rendering the content of the tooltips.",
             required: true,
         }) }}
 

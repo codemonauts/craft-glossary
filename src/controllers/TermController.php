@@ -4,7 +4,7 @@ namespace codemonauts\glossary\controllers;
 
 use codemonauts\glossary\elements\Glossary as GlossaryElement;
 use codemonauts\glossary\elements\Term as TermElement;
-use codemonauts\glossary\resources\GlossaryAssets;
+use codemonauts\glossary\resources\GlossarySwitcher;
 use Craft;
 use craft\base\Element;
 use craft\web\Controller;
@@ -24,12 +24,12 @@ class TermController extends Controller
         return true;
     }
 
-    public function actionIndex()
+    public function actionIndex(): Response
     {
         return $this->renderTemplate('glossary/term/index');
     }
 
-    public function actionEdit(int $termId = null, TermElement $term = null)
+    public function actionEdit(int $termId = null, TermElement $term = null): Response
     {
         // Find or create new term to edit
         if ($termId !== null) {
@@ -39,15 +39,13 @@ class TermController extends Controller
                     throw new NotFoundHttpException();
                 }
             }
-        } else {
-            if ($term === null) {
-                $term = new TermElement();
-                $term->id = 0;
-            }
+        } else if ($term === null) {
+            $term = new TermElement();
+            $term->id = 0;
         }
 
         // Register JS to switch glossary
-        $this->getView()->registerAssetBundle(GlossaryAssets::class);
+        $this->getView()->registerAssetBundle(GlossarySwitcher::class);
         $this->getView()->registerJs('new Craft.GlossarySwitcher();');
 
         // Set variables
@@ -72,10 +70,10 @@ class TermController extends Controller
         $variables['tabs'] = $form->getTabMenu();
         $variables['fieldsHtml'] = $form->render();
 
-        $this->renderTemplate('glossary/term/_edit', $variables);
+        return $this->renderTemplate('glossary/term/_edit', $variables);
     }
 
-    public function actionSave()
+    public function actionSave(): ?Response
     {
         $this->requirePostRequest();
 
@@ -103,7 +101,7 @@ class TermController extends Controller
 
         // Save term
         if (Craft::$app->getElements()->saveElement($term)) {
-            Craft::$app->getSession()->setName('Term saved.');
+            Craft::$app->getSession()->setNotice('Term saved.');
 
             return $this->redirectToPostedUrl($term);
         }
@@ -153,7 +151,7 @@ class TermController extends Controller
         ]);
     }
 
-    public function actionDelete()
+    public function actionDelete(): ?Response
     {
         $this->requirePostRequest();
 
@@ -166,7 +164,7 @@ class TermController extends Controller
 
         // Delete term
         if (!Craft::$app->getElements()->deleteElement($term)) {
-            Craft::$app->getSession()->setError(Craft::t('glossary', 'Couldn’t delete term.'));
+            Craft::$app->getSession()->setError(Craft::t('glossary', 'Could not delete term.'));
 
             Craft::$app->getUrlManager()->setRouteParams([
                 'term' => $term,
@@ -179,5 +177,4 @@ class TermController extends Controller
 
         return $this->redirectToPostedUrl($term);
     }
-
 }

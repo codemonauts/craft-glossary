@@ -1,16 +1,14 @@
-# Glossaries for Craft CMS
+# Glossary for Craft CMS
 
 ![Icon](resources/glossary.png)
 
-xxx
-
 ## Background
 
-xxx
+A glossary with tooltips.
 
 ## Requirements
 
- * Craft CMS >= 3.0.0
+ * Craft CMS >= 3.5.0
 
 ## Installation
 
@@ -24,10 +22,6 @@ composer require codemonauts/craft-glossary
 
 ## Usage
 
-xxx
-
-## Twig Filter
-
-xxx
+For detailed usage information, [visit the docs]().
 
 With ❤ by [codemonauts](https://codemonauts.com)

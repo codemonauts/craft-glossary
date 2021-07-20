@@ -271,11 +271,11 @@ class Term extends Element
             $record->id = (int)$this->id;
         }
 
-        $record->term = (string)$this->term;
-        $record->synonyms = (string)$this->synonyms;
-        $record->glossaryId = (int)$this->glossaryId;
-        $record->caseSensitive = (bool)$this->caseSensitive;
-        $record->matchSubstring = (bool)$this->matchSubstring;
+        $record->term = $this->term;
+        $record->synonyms = $this->synonyms;
+        $record->glossaryId = $this->glossaryId;
+        $record->caseSensitive = $this->caseSensitive;
+        $record->matchSubstring = $this->matchSubstring;
 
         $record->save(false);
 

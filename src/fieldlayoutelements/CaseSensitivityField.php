@@ -36,7 +36,7 @@ class CaseSensitivityField extends StandardField
     /**
      * @inheritdoc
      */
-    public $tip = 'How the term and synonyms should match when searching.';
+    public $instructions = 'How the term and synonyms should match when searching.';
 
     /**
      * @inheritdoc
@@ -56,7 +56,7 @@ class CaseSensitivityField extends StandardField
     /**
      * @inheritdoc
      */
-    public function fields()
+    public function fields(): array
     {
         $fields = parent::fields();
 
@@ -73,7 +73,7 @@ class CaseSensitivityField extends StandardField
     /**
      * @inheritdoc
      */
-    public function defaultLabel(ElementInterface $element = null, bool $static = false)
+    public function defaultLabel(ElementInterface $element = null, bool $static = false): ?string
     {
         return Craft::t('glossary', 'Case Sensitivity');
     }
@@ -105,7 +105,7 @@ class CaseSensitivityField extends StandardField
     /**
      * @inheritdoc
      */
-    protected function inputHtml(ElementInterface $element = null, bool $static = false)
+    protected function inputHtml(ElementInterface $element = null, bool $static = false): ?string
     {
         return Craft::$app->getView()->renderTemplate('_includes/forms/lightswitch', [
             'id' => $this->id(),

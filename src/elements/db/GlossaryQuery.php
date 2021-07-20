@@ -22,9 +22,9 @@ class GlossaryQuery extends ElementQuery
      *
      * @return static self reference
      */
-    public function default($value): GlossaryQuery
+    public function default(bool $value): GlossaryQuery
     {
-        $this->default = (bool)$value;
+        $this->default = $value;
 
         return $this;
     }
@@ -34,9 +34,9 @@ class GlossaryQuery extends ElementQuery
      *
      * @return static self reference
      */
-    public function handle($value): GlossaryQuery
+    public function handle(string $value): GlossaryQuery
     {
-        $this->handle = (string)$value;
+        $this->handle = $value;
 
         return $this;
     }
@@ -51,9 +51,9 @@ class GlossaryQuery extends ElementQuery
         $this->query->select([
             'glossary_glossaries.title',
             'glossary_glossaries.handle',
-            'glossary_glossaries.provider',
             'glossary_glossaries.default',
-            'glossary_glossaries.template',
+            'glossary_glossaries.termTemplate',
+            'glossary_glossaries.contentTemplate',
             'glossary_glossaries.css',
             'glossary_glossaries.script',
             'glossary_glossaries.fieldLayoutId',

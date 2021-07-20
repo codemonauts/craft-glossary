@@ -41,7 +41,7 @@ class TermField extends StandardTextField
     /**
      * @inheritdoc
      */
-    public $tip = 'The main term to process.';
+    public $instructions = 'The main term to process.';
 
     /**
      * @inheritdoc
@@ -63,7 +63,7 @@ class TermField extends StandardTextField
     /**
      * @inheritdoc
      */
-    public function fields()
+    public function fields(): array
     {
         $fields = parent::fields();
 
@@ -82,7 +82,7 @@ class TermField extends StandardTextField
     /**
      * @inheritdoc
      */
-    public function defaultLabel(ElementInterface $element = null, bool $static = false)
+    public function defaultLabel(ElementInterface $element = null, bool $static = false): ?string
     {
         return Craft::t('glossary', 'Term');
     }

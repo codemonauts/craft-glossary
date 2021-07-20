@@ -5,7 +5,7 @@ namespace codemonauts\glossary\elements;
 use codemonauts\glossary\elements\db\GlossaryQuery;
 use codemonauts\glossary\Glossary as GlossaryPlugin;
 use codemonauts\glossary\records\Glossary as GlossaryRecord;
-use codemonauts\glossary\services\Provider;
+use codemonauts\glossary\resources\GlossaryFrontend;
 use Craft;
 use craft\base\Element;
 use craft\elements\db\ElementQueryInterface;
@@ -20,9 +20,9 @@ class Glossary extends Element
 {
     public $title;
     public $handle;
-    public $provider;
     public $default;
-    public $template;
+    public $termTemplate;
+    public $contentTemplate;
     public $css;
     public $script;
     public $fieldLayoutId;
@@ -114,9 +114,9 @@ class Glossary extends Element
         return [
             'title' => 'Title',
             'handle' => 'Handle',
-            'provider' => 'Provider',
             'default' => 'Default',
-            'template' => 'Template',
+            'termTemplate' => 'Term template',
+            'contentTemplate' => 'Content template',
             'css' => 'CSS',
             'script' => 'Script',
             'counter' => '# of Terms',
@@ -189,10 +189,6 @@ class Glossary extends Element
             return Term::find()->glossaryId($this->id)->count();
         }
 
-        if ($attribute === 'provider') {
-            return $this->getProvider()->getName();
-        }
-
         return parent::tableAttributeHtml($attribute);
     }
 
@@ -214,9 +210,9 @@ class Glossary extends Element
 
         $record->title = (string)$this->title;
         $record->handle = (string)$this->handle;
-        $record->provider = (string)$this->provider;
         $record->default = (bool)$this->default;
-        $record->template = $this->template;
+        $record->termTemplate = $this->termTemplate;
+        $record->contentTemplate = $this->contentTemplate;
         $record->css = $this->css;
         $record->script = $this->script;
         $record->fieldLayoutId = (int)$this->fieldLayoutId;
@@ -245,19 +241,9 @@ class Glossary extends Element
     {
         $rules = parent::defineRules();
 
-        $rules[] = [['title', 'handle', 'default', 'template', 'provider'], 'required'];
+        $rules[] = [['title', 'handle', 'default', 'contentTemplate'], 'required'];
 
         return $rules;
-    }
-
-    /**
-     * Returns the provider class of this glossary.
-     *
-     * @return Provider
-     */
-    public function getProvider()
-    {
-        return new $this->provider;
     }
 
     /**
@@ -265,9 +251,11 @@ class Glossary extends Element
      *
      * @throws \yii\base\InvalidConfigException
      */
-    public function registerAssets()
+    public function registerAssets(): void
     {
         $view = Craft::$app->getView();
+
+        $view->registerAssetBundle(GlossaryFrontend::class);
 
         if ($this->css !== '') {
             $view->registerCssFile(Craft::parseEnv($this->css));
@@ -278,7 +266,10 @@ class Glossary extends Element
         }
     }
 
-    public function afterDelete()
+    /**
+     * @inheritDoc
+     */
+    public function afterDelete(): void
     {
         parent::afterDelete();
 

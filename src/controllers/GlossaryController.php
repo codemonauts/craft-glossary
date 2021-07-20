@@ -3,11 +3,10 @@
 namespace codemonauts\glossary\controllers;
 
 use codemonauts\glossary\elements\Glossary as GlossaryElement;
-use codemonauts\glossary\Glossary as GlossaryPlugin;
-use codemonauts\glossary\services\providers\Custom;
 use Craft;
 use craft\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 class GlossaryController extends Controller
 {
@@ -22,25 +21,23 @@ class GlossaryController extends Controller
         return true;
     }
 
-    public function actionIndex()
+    public function actionIndex(): Response
     {
         return $this->renderTemplate('glossary/glossary/index');
     }
 
-    public function actionEdit(int $glossaryId = null, GlossaryElement $glossary = null)
+    public function actionEdit(int $glossaryId = null, GlossaryElement $glossary = null): Response
     {
         // Find or create new glossary to edit
         if ($glossaryId !== null) {
             if ($glossary === null) {
-                $glossary = GlossaryElement::findOne(['id' => $glossaryId]);
+                $glossary = GlossaryElement::findOne($glossaryId);
                 if (!$glossary) {
                     throw new NotFoundHttpException();
                 }
             }
-        } else {
-            if ($glossary === null) {
-                $glossary = new GlossaryElement();
-            }
+        } else if ($glossary === null) {
+            $glossary = new GlossaryElement();
         }
 
         // Set variables
@@ -50,10 +47,10 @@ class GlossaryController extends Controller
         $variables['isNew'] = !$glossary->id;
         $variables['fieldLayout'] = $glossary->getFieldLayout();
 
-        $this->renderTemplate('glossary/glossary/_edit', $variables);
+        return $this->renderTemplate('glossary/glossary/_edit', $variables);
     }
 
-    public function actionSave()
+    public function actionSave(): ?Response
     {
         $this->requirePostRequest();
 
@@ -70,9 +67,9 @@ class GlossaryController extends Controller
         // Set element fields
         $glossary->title = $request->getBodyParam('title');
         $glossary->handle = $request->getBodyParam('handle');
-        $glossary->provider = Custom::class;
         $glossary->default = (bool)$request->getBodyParam('default');
-        $glossary->template = $request->getBodyParam('template');
+        $glossary->termTemplate = $request->getBodyParam('termTemplate');
+        $glossary->contentTemplate = $request->getBodyParam('contentTemplate');
         $glossary->css = $request->getBodyParam('css');
         $glossary->script = $request->getBodyParam('script');
 
@@ -100,7 +97,7 @@ class GlossaryController extends Controller
         return null;
     }
 
-    public function actionDelete()
+    public function actionDelete(): ?Response
     {
         $this->requirePostRequest();
 
@@ -113,7 +110,7 @@ class GlossaryController extends Controller
 
         // Delete glossary
         if (!Craft::$app->getElements()->deleteElement($glossary)) {
-            Craft::$app->getSession()->setError(Craft::t('glossary', 'Couldn’t delete glossary.'));
+            Craft::$app->getSession()->setError(Craft::t('glossary', 'Could not delete glossary.'));
 
             Craft::$app->getUrlManager()->setRouteParams([
                 'glossary' => $glossary,

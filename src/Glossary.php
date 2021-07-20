@@ -8,10 +8,11 @@ use codemonauts\glossary\fieldlayoutelements\SynonymsField;
 use codemonauts\glossary\services\Glossaries;
 use codemonauts\glossary\elements\Glossary as GlossaryElement;
 use codemonauts\glossary\fieldlayoutelements\TermField;
+use codemonauts\glossary\services\Terms;
 use codemonauts\glossary\twigextensions\GlossaryFilter;
 use codemonauts\glossary\variables\GlossaryVariable;
 use Craft;
-use \craft\base\Plugin;
+use craft\base\Plugin;
 use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
@@ -26,6 +27,7 @@ use yii\base\Event;
  * Class Glossary
  *
  * @property Glossaries $glossaries
+ * @property Terms $terms
  */
 class Glossary extends Plugin
 {
@@ -33,6 +35,8 @@ class Glossary extends Plugin
      * @inheritDoc
      */
     public $hasCpSettings = false;
+
+    public $hasCpSection = true;
 
     /**
      * @inheritDoc
@@ -49,6 +53,7 @@ class Glossary extends Plugin
         // Register services as components
         $this->setComponents([
             'glossaries' => Glossaries::class,
+            'terms' => Terms::class,
         ]);
 
         // Register Twig extension
@@ -57,17 +62,22 @@ class Glossary extends Plugin
         }
 
         // Register variables
-        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $event) {
+        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function (Event $event) {
             $variable = $event->sender;
             $variable->set('glossary', GlossaryVariable::class);
         });
 
         // Register garbage collection routine
-        Event::on(Gc::class, Gc::EVENT_RUN, function() {
+        Event::on(Gc::class, Gc::EVENT_RUN, function () {
             Craft::$app->gc->hardDelete([
                 '{{%glossary_glossaries}}',
                 '{{%glossary_terms}}',
             ]);
+        });
+
+        // Render Terms in hook
+        Craft::$app->view->hook('glossary-terms', function () {
+            return $this->getTerms()->getRenderedTerms();
         });
 
         // Register things only needed in CP requests
@@ -79,10 +89,10 @@ class Glossary extends Plugin
     /**
      * Initialize plugin for CP requests
      */
-    private function _cpInit()
+    private function _cpInit(): void
     {
         // Register permissions
-        Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function(RegisterUserPermissionsEvent $event) {
+        Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function (RegisterUserPermissionsEvent $event) {
             $event->permissions['glossary'] = [
                 'glossary:glossaryEdit' => ['label' => 'Edit Glossaries'],
                 'glossary:termEdit' => ['label' => 'Edit Terms'],
@@ -90,7 +100,7 @@ class Glossary extends Plugin
         });
 
         // Register CP routes
-        Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function(RegisterUrlRulesEvent $event) {
+        Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function (RegisterUrlRulesEvent $event) {
             $event->rules['glossary/glossaries'] = 'glossary/glossary/index';
             $event->rules['glossary/glossary/new'] = 'glossary/glossary/edit';
             $event->rules['glossary/glossary/<glossaryId:\d+>'] = 'glossary/glossary/edit';
@@ -100,11 +110,11 @@ class Glossary extends Plugin
         });
 
         // Register field layout
-        Event::on(FieldLayout::class, FieldLayout::EVENT_DEFINE_STANDARD_FIELDS, function(DefineFieldLayoutFieldsEvent $event) {
+        Event::on(FieldLayout::class, FieldLayout::EVENT_DEFINE_STANDARD_FIELDS, function (DefineFieldLayoutFieldsEvent $event) {
             /** @var FieldLayout $fieldLayout */
             $fieldLayout = $event->sender;
 
-            if ($fieldLayout->type == GlossaryElement::class) {
+            if ($fieldLayout->type === GlossaryElement::class) {
                 $event->fields[] = TermField::class;
                 $event->fields[] = SynonymsField::class;
                 $event->fields[] = CaseSensitivityField::class;
@@ -146,9 +156,21 @@ class Glossary extends Plugin
      * Returns the glossaries component.
      *
      * @return Glossaries
+     * @throws \yii\base\InvalidConfigException
      */
-    public function getGlossaries()
+    public function getGlossaries(): Glossaries
     {
         return $this->get('glossaries');
+    }
+
+    /**
+     * Returns the terms component.
+     *
+     * @return Terms
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getTerms(): Terms
+    {
+        return $this->get('terms');
     }
 }
