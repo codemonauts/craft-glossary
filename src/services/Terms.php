@@ -28,7 +28,7 @@ class Terms extends Component
             $term->term,
         ];
 
-        if ($term->synonyms != '') {
+        if ($term->synonyms !== '') {
             $synonyms = explode(',', $term->synonyms);
             $terms = array_merge($terms, $synonyms);
         }
@@ -50,18 +50,18 @@ class Terms extends Component
         $originalText = $text;
 
         try {
+            $termTemplate = $glossary->termTemplate !== '' ? $glossary->termTemplate : '<span>{{ text }}</span>';
             $replacements = [];
             $terms = Term::find()->glossary($glossary)->all();
-            $globalIndex0 = 0;
             $usedTerms = [];
 
             foreach ($terms as $term) {
-                $template = Html::modifyTagAttributes($glossary->termTemplate, [
+                $template = Html::modifyTagAttributes($termTemplate, [
                     'class' => 'glossary',
                     'data-glossary-term' => 'term-' . $term->id,
                 ]);
 
-                $index0 = 0;
+                $index = 0;
                 $words = $this->parseTerms($term);
 
                 foreach ($words as $word) {
@@ -73,15 +73,11 @@ class Terms extends Component
                     if (!$term->caseSensitive) {
                         $pattern .= 'i';
                     }
-                    $text = s($text)->replaceMatches($pattern, function ($matches) use ($term, $template, &$replacements, &$index0, &$globalIndex0, $view, &$usedTerms, $glossary) {
+                    $text = s($text)->replaceMatches($pattern, function ($matches) use ($term, $template, &$replacements, &$index, $view, &$usedTerms, $glossary) {
                         try {
                             $replacement = trim($view->renderString($template, [
                                 'term' => $term,
                                 'text' => $matches[0],
-                                'termIndex0' => $index0,
-                                'termIndex' => ($index0 + 1),
-                                'globalIndex0' => $globalIndex0,
-                                'globalIndex' => ($globalIndex0 + 1),
                             ], 'site'));
                         } catch (SyntaxError $e) {
                             Craft::error($e->getMessage(), 'glossary');
@@ -92,19 +88,12 @@ class Terms extends Component
                             return $term;
                         }
 
-                        $token = $term->uid . '-' . $index0;
+                        $token = $term->uid . '-' . $index++;
                         $replacements[$token] = $replacement;
-                        $index0++;
-                        $globalIndex0++;
-
                         $variables = $term->getFieldValues();
-                        $variables['index0'] = $index0;
-                        $variables['index'] = $index0 + 1;
-                        $variables['globalIndex0'] = $globalIndex0;
-                        $variables['globalIndex'] = $globalIndex0 + 1;
 
                         try {
-                            $usedTerms[$term->id] = $view->renderTemplate($glossary->contentTemplate, $variables);
+                            $usedTerms[$term->id] = $view->renderTemplate($glossary->tooltipTemplate, $variables);
                         } catch (SyntaxError $e) {
                             Craft::error($e->getMessage(), 'glossary');
                         }
@@ -113,6 +102,7 @@ class Terms extends Component
                     });
                 }
             }
+
             foreach ($replacements as $token => $replacement) {
                 $text = s($text)->replace('{{%' . $token . '%}}', $replacement);
             }
@@ -123,6 +113,7 @@ class Terms extends Component
                     'id' => 'term-' . $id,
                 ]);
             }
+
             $this->renderedTerms = Html::tag('div', $renderedTerms, [
                 'id' => 'glossary-terms',
                 'style' => 'display: none;',
