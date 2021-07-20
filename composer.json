@@ -19,7 +19,7 @@
   ],
   "support": {
     "source": "https://github.com/codemonauts/craft-glossary",
-    "docs": "https://github.com/codemonauts/craft-glossary/blob/master/README.md",
+    "docs": "https://plugins.codemonauts.com/plugins/glossary/Introduction.html",
     "issues": "https://github.com/codemonauts/craft-glossary/issues"
   },
   "require": {
@@ -36,6 +36,6 @@
     "name": "Glossary",
     "description": "A glossary for Craft CMS.",
     "changelogUrl": "https://github.com/codemonauts/craft-glossary/blob/master/CHANGELOG.md",
-    "documentationUrl": "https://github.com/codemonauts/craft-glossary/blob/master/README.md"
+    "documentationUrl": "https://plugins.codemonauts.com/plugins/glossary/Introduction.html"
   }
 }

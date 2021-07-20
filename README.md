@@ -4,7 +4,7 @@
 
 ## Background
 
-A glossary with tooltips.
+A glossary plugin for Craft CMS.
 
 ## Requirements
 
@@ -22,6 +22,6 @@ composer require codemonauts/craft-glossary
 
 ## Usage
 
-For detailed usage information, [visit the docs]().
+For detailed usage information, [visit the docs](https://plugins.codemonauts.com/plugins/glossary/Introduction.html).
 
 With ❤ by [codemonauts](https://codemonauts.com)

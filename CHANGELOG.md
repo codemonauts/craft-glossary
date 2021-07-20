@@ -1,6 +1,6 @@
-# Glossaries for Craft CMS Changelog
+# Release Notes for Glossary for Craft CMS
 
-## Unreleased
+## 1.0.0 - 2021-07-20
 
 ### Added
 
