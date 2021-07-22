@@ -6,7 +6,7 @@
 {% block actionButton %}
     {% if craft.glossary.glossaries.count() %}
     <div class="buttons">
-        <a href="{{ url('glossary/term/new') }}" class="btn submit add icon">Add Term</a>
+        <a href="{{ url('glossary/term/new') }}" class="btn submit add icon">{{ 'Add Term'|t('glossary') }}</a>
     </div>
     {% endif %}
 {% endblock %}

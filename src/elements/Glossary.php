@@ -40,7 +40,7 @@ class Glossary extends Element
      */
     public static function displayName(): string
     {
-        return 'Glossary';
+        return Craft::t('glossary', 'Glossary');
     }
 
     /**
@@ -56,7 +56,7 @@ class Glossary extends Element
      */
     public static function pluralDisplayName(): string
     {
-        return 'Glossaries';
+        return Craft::t('glossary', 'Glossaries');
     }
 
     /**
@@ -100,7 +100,7 @@ class Glossary extends Element
         return [
             [
                 'key' => '*',
-                'label' => 'All glossaries',
+                'label' => Craft::t('glossary', 'All glossaries'),
                 'criteria' => [],
             ],
         ];
@@ -112,14 +112,14 @@ class Glossary extends Element
     public static function defineTableAttributes(): array
     {
         return [
-            'title' => 'Title',
-            'handle' => 'Handle',
-            'default' => 'Default',
-            'termTemplate' => 'Term template',
-            'tooltipTemplate' => 'Tooltip template',
+            'title' => Craft::t('app', 'Title'),
+            'handle' => Craft::t('app', 'Handle'),
+            'default' => Craft::t('app', 'Default'),
+            'termTemplate' => Craft::t('glossary', 'Term template'),
+            'tooltipTemplate' => Craft::t('glossary', 'Tooltip template'),
             'css' => 'CSS',
             'script' => 'Script',
-            'counter' => '# of Terms',
+            'counter' => Craft::t('glossary', '# of Terms'),
         ];
     }
 
