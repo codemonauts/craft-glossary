@@ -54,7 +54,7 @@ class Term extends Element
      */
     public static function displayName(): string
     {
-        return 'Term';
+        return Craft::t('glossary', 'Term');
     }
 
     /**
@@ -70,7 +70,7 @@ class Term extends Element
      */
     public static function pluralDisplayName(): string
     {
-        return 'Terms';
+        return Craft::t('glossary', 'Terms');
     }
 
     /**
@@ -138,11 +138,11 @@ class Term extends Element
         $sources = [
             [
                 'key' => '*',
-                'label' => 'All terms',
+                'label' => Craft::t('glossary', 'All terms'),
                 'criteria' => [],
             ],
             [
-                'heading' => 'Glossaries',
+                'heading' => Craft::t('glossary', 'Glossaries'),
             ],
         ];
 
@@ -166,9 +166,9 @@ class Term extends Element
     public static function defineTableAttributes(): array
     {
         return [
-            'term' => 'Term',
-            'caseSensitive' => 'Case Sensitive',
-            'matchSubstring' => 'Match as substring',
+            'term' => Craft::t('glossary', 'Term'),
+            'caseSensitive' => Craft::t('glossary', 'Case Sensitive'),
+            'matchSubstring' => Craft::t('glossary', 'Match as substring'),
         ];
     }
 
@@ -190,7 +190,7 @@ class Term extends Element
     public static function defineSortOptions(): array
     {
         return [
-            'term' => 'Term',
+            'term' => Craft::t('glossary', 'Term'),
         ];
     }
 

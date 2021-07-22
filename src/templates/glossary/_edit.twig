@@ -50,7 +50,7 @@
 
         {{ forms.textField({
             label: 'Handle'|t('app'),
-            instructions: "How you’ll refer to this glossary in the templates.",
+            instructions: "How you'll refer to this glossary in the templates."|t('glossary'),
             id: 'handle',
             name: 'handle',
             class: 'code',
@@ -62,8 +62,8 @@
         }) }}
 
         {{ forms.lightswitchField({
-            label: 'Default glossary',
-            instructions: 'The default glossary will be used when no handle has been specified.',
+            label: 'Default glossary'|t('glossary'),
+            instructions: 'The default glossary will be used when no handle has been specified.'|t('glossary'),
             id: 'default',
             name: 'default',
             errors: glossary.getErrors('default'),
@@ -71,32 +71,32 @@
         }) }}
 
         {{ forms.autosuggestField({
-            label: 'Term Template',
+            label: 'Term Template'|t('glossary'),
             id: 'termTemplate',
             name: 'termTemplate',
             value: glossary.termTemplate,
             errors: glossary.getErrors('termTemplate'),
-            instructions: "The template to use for rendering every single term inline. If empty, the plugin's default will be used.",
+            instructions: "The template to use for rendering every single term inline. If empty, the plugin's default will be used."|t('glossary'),
             required: false,
         }) }}
 
         {{ forms.autosuggestField({
-            label: 'Tooltip Template',
+            label: 'Tooltip Template'|t('glossary'),
             id: 'tooltipTemplate',
             name: 'tooltipTemplate',
             value: glossary.tooltipTemplate,
             suggestions: craft.cp.getTemplateSuggestions(),
             errors: glossary.getErrors('tooltipTemplate'),
-            instructions: "The template to use for rendering the content of the tooltips.",
+            instructions: "The template to use for rendering the content of the tooltips."|t('glossary'),
             required: true,
         }) }}
 
         {{ forms.autosuggestField({
-            label: 'CSS to load',
+            label: 'CSS to load'|t('glossary'),
             id: 'css',
             name: 'css',
             value: glossary.css,
-            instructions: 'An optional CSS file to register when the glossary has been used in a page.',
+            instructions: 'An optional CSS file to register when the glossary has been used in a page.'|t('glossary'),
             errors: glossary.getErrors('css'),
             suggestEnvVars: true,
             suggestAliases: true,
@@ -104,11 +104,11 @@
         }) }}
 
         {{ forms.autosuggestField({
-            label: 'Script to load',
+            label: 'Script to load'|t('glossary'),
             id: 'script',
             name: 'script',
             value: glossary.script,
-            instructions: 'An optional script to register when the glossary has been used in a page.',
+            instructions: 'An optional script to register when the glossary has been used in a page.'|t('glossary'),
             errors: glossary.getErrors('script'),
             suggestEnvVars: true,
             suggestAliases: true,
