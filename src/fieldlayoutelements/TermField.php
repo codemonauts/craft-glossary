@@ -110,4 +110,14 @@ class TermField extends StandardTextField
 
         return null;
     }
+
+    /**
+     * @inheritdoc
+     */
+    protected function inputHtml(ElementInterface $element = null, bool $static = false)
+    {
+        $this->instructions = Craft::t('glossary', $this->instructions);
+
+        return parent::inputHtml($element, $static);
+    }
 }

@@ -107,13 +107,15 @@ class MatchSubstringField extends StandardField
      */
     protected function inputHtml(ElementInterface $element = null, bool $static = false): ?string
     {
+        $this->instructions = Craft::t('glossary', $this->instructions);
+
         return Craft::$app->getView()->renderTemplate('_includes/forms/lightswitch', [
             'id' => $this->id(),
             'on' => $this->value($element),
             'name' => $this->name ?? $this->attribute(),
             'disabled' => $static || $this->disabled,
-            'onLabel' => $this->onLabel,
-            'offLabel' => $this->offLabel,
+            'onLabel' => Craft::t('glossary', $this->onLabel),
+            'offLabel' => Craft::t('glossary', $this->offLabel),
         ]);
     }
 }

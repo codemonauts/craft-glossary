@@ -33,4 +33,8 @@ return [
     'Edit Terms' => 'Begriffe bearbeiten',
     'How you\'ll refer to this glossary in the templates.' => 'Wie man in Templates auf den Glossar verweist.',
     'Default' => 'Standard',
+    'insensitive' => 'ignorieren',
+    'sensitive' => 'berücksichtigen',
+    'full word only' => 'nur als alleinstehendes Wort',
+    'substring' => 'Teil eines Wortes',
 ];
