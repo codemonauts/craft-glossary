@@ -252,6 +252,10 @@ class Term extends Element
             $glossary = Glossary::findOne(['default' => true]);
         }
 
+        if (!$glossary) {
+            $glossary = Glossary::findOne();
+        }
+
         return $glossary !== null ? $glossary->getFieldLayout() : null;
     }
 
