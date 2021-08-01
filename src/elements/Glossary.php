@@ -114,7 +114,7 @@ class Glossary extends Element
         return [
             'title' => Craft::t('app', 'Title'),
             'handle' => Craft::t('app', 'Handle'),
-            'default' => Craft::t('app', 'Default'),
+            'default' => Craft::t('glossary', 'Default'),
             'termTemplate' => Craft::t('glossary', 'Term template'),
             'tooltipTemplate' => Craft::t('glossary', 'Tooltip template'),
             'css' => 'CSS',

@@ -94,8 +94,8 @@ class Glossary extends Plugin
         // Register permissions
         Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function (RegisterUserPermissionsEvent $event) {
             $event->permissions['glossary'] = [
-                'glossary:glossaryEdit' => ['label' => 'Edit Glossaries'],
-                'glossary:termEdit' => ['label' => 'Edit Terms'],
+                'glossary:glossaryEdit' => ['label' => Craft::t('glossary', 'Edit Glossaries')],
+                'glossary:termEdit' => ['label' => Craft::t('glossary', 'Edit Terms')],
             ];
         });
 
@@ -136,14 +136,14 @@ class Glossary extends Plugin
         if ($currentUser->can('glossary:glossaryEdit')) {
             $subNavs['glossaries'] = [
                 'url' => 'glossary/glossaries',
-                'label' => 'Glossaries',
+                'label' => Craft::t('glossary', 'Glossaries'),
             ];
         }
 
         if ($currentUser->can('glossary:termEdit')) {
             $subNavs['terms'] = [
                 'url' => 'glossary/terms',
-                'label' => 'Terms',
+                'label' => Craft::t('glossary', 'Terms'),
             ];
         }
 

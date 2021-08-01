@@ -28,5 +28,9 @@ return [
     'Synonyms' => 'Synonyme',
     'Comma separated list of Synonyms of the main term to also process.' => 'Komma-separierte Liste an Synonymen für den Begriff, die ebenfall erkannt werden.',
     'The main term to process.' => 'Hauptbegriff',
-    '# of Terms' => 'Anzahl von Begriffen'
+    '# of Terms' => 'Anzahl von Begriffen',
+    'Edit Glossaries' => 'Glossare bearbeiten',
+    'Edit Terms' => 'Begriffe bearbeiten',
+    'How you\'ll refer to this glossary in the templates.' => 'Wie man in Templates auf den Glossar verweist.',
+    'Default' => 'Standard',
 ];
