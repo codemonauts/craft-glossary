@@ -93,7 +93,7 @@ class Terms extends Component
                         $variables = $term->getFieldValues();
 
                         try {
-                            $usedTerms[$term->id] = $view->renderTemplate($glossary->tooltipTemplate, $variables);
+                            $usedTerms[$term->id] = $view->renderTemplate($glossary->tooltipTemplate, $variables, 'site');
                         } catch (SyntaxError $e) {
                             Craft::error($e->getMessage(), 'glossary');
                         }
