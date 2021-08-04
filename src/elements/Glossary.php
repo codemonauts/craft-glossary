@@ -221,12 +221,16 @@ class Glossary extends Element
 
         // Update old default glossary
         if ($this->default) {
-            $oldDefault = GlossaryPlugin::getInstance()->glossaries->getDefaultGlossary()->id;
-            if ($oldDefault !== null && $this->id !== $oldDefault) {
+            $oldDefault = Glossary::find()
+                ->default(true)
+                ->id('not '.$this->id)
+                ->one();
+
+            if ($oldDefault) {
                 Db::update('{{%glossary_glossaries}}', [
                     'default' => false,
                 ], [
-                    'id' => $oldDefault,
+                    'id' => $oldDefault->id,
                 ]);
             }
         }
