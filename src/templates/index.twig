@@ -1,1 +1,7 @@
-{% redirect 'glossary/glossaries' %}
+{% if currentUser.can('glossary:glossaryEdit') %}
+  {% redirect 'glossary/glossaries' %}
+{% elseif currentUser.can('glossary:termEdit') %}
+  {% redirect 'glossary/terms' %}
+{% else %}
+  {% redirect 'dashboard' %}
+{% endif %}

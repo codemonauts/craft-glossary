@@ -126,12 +126,16 @@ class Glossary extends Plugin
     /**
      * @inheritDoc
      */
-    public function getCpNavItem(): array
+    public function getCpNavItem(): ?array
     {
+        $currentUser = Craft::$app->getUser()->getIdentity();
+
+        if (!$currentUser->can('glossary:glossaryEdit') && !$currentUser->can('glossary:termEdit')) {
+            return null;
+        }
+
         $navItem = parent::getCpNavItem();
         $subNavs = [];
-
-        $currentUser = Craft::$app->getUser()->getIdentity();
 
         if ($currentUser->can('glossary:glossaryEdit')) {
             $subNavs['glossaries'] = [
