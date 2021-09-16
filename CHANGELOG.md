@@ -1,5 +1,11 @@
 # Release Notes for Glossary for Craft CMS
 
+## Unreleased
+
+### Fixed
+
+- Deleting disabled terms is fixed.
+
 ## 1.0.1 - 2021-09-16
 
 ### Added

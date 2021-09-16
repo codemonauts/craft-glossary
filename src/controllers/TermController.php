@@ -157,7 +157,11 @@ class TermController extends Controller
 
         // Get term to delete
         $termId = Craft::$app->getRequest()->getRequiredBodyParam('termId');
-        $term = TermElement::findOne(['id' => $termId]);
+        $term = TermElement::find()
+            ->anyStatus()
+            ->id($termId)
+            ->one();
+
         if ($term === null) {
             throw new NotFoundHttpException(Craft::t('glossary', 'Term not found.'));
         }
