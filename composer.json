@@ -1,7 +1,7 @@
 {
   "name": "codemonauts/craft-glossary",
-  "description": "A glossary for Craft CMS.",
-  "version": "1.0.0",
+  "description": "Add glossaries with tooltips to Craft CMS.",
+  "version": "1.0.1",
   "type": "craft-plugin",
   "keywords": [
     "craft",
@@ -34,7 +34,7 @@
     "handle": "glossary",
     "class": "codemonauts\\glossary\\Glossary",
     "name": "Glossary",
-    "description": "A glossary for Craft CMS.",
+    "description": "Add glossaries with tooltips to Craft CMS.",
     "changelogUrl": "https://github.com/codemonauts/craft-glossary/blob/master/CHANGELOG.md",
     "documentationUrl": "https://plugins.codemonauts.com/plugins/glossary/Introduction.html"
   }

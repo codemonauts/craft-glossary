@@ -1,10 +1,11 @@
 # Release Notes for Glossary for Craft CMS
 
-## Unreleased
+## 1.0.1 - 2021-09-16
 
 ### Added
 
 - Added translation. Added German translation (thanks to @emsuiko).
+- You can now iterate over terms in templates like `{{ for term in craft.glossary.terms.glossary('myGlossary').all() }}`. 
 
 ### Fixed
 
