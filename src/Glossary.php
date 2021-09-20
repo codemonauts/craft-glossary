@@ -41,7 +41,7 @@ class Glossary extends Plugin
     /**
      * @inheritDoc
      */
-    public $schemaVersion = '1.0.1';
+    public $schemaVersion = '1.0.2';
 
     /**
      * @inheritDoc
