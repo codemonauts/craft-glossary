@@ -1,5 +1,11 @@
 # Release Notes for Glossary for Craft CMS
 
+## 1.0.3 - 2021-09-27
+
+### Fixed
+
+- Remove CP asset dependencies from frontend asset bundle.
+
 ## 1.0.2 - 2021-09-20
 
 ### Fixed
