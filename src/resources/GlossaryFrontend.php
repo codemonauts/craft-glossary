@@ -14,10 +14,6 @@ class GlossaryFrontend extends AssetBundle
     {
         $this->sourcePath = '@codemonauts/glossary/resources';
 
-        $this->depends = [
-            CpAsset::class,
-        ];
-
         $this->js = [
             'js/Glossary.js',
         ];
