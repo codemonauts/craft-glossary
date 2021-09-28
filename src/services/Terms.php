@@ -65,6 +65,7 @@ class Terms extends Component
                 $words = $this->parseTerms($term);
 
                 foreach ($words as $word) {
+                    $word = preg_quote($word, '/');
                     if ($term->matchSubstring) {
                         $pattern = '/' . $word . '/';
                     } else {

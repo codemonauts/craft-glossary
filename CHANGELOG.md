@@ -1,5 +1,11 @@
 # Release Notes for Glossary for Craft CMS
 
+## 1.0.5 - 2021-09-28
+
+### Fixed
+
+- Escaping special regular expression characters.
+
 ## 1.0.4 - 2021-09-28
 
 ### Added
