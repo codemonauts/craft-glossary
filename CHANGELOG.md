@@ -1,5 +1,15 @@
 # Release Notes for Glossary for Craft CMS
 
+## 1.0.4 - 2021-09-28
+
+### Added
+
+- Add the term element to the term template variables. So you can now acces the hole term element within the template.
+
+### Deprecated
+
+- The custom fields values of a term in the term template are accessible by the handle, e.g. `{{ myCustomField }}`. This will be removed in the future. You should now access the custom field values using the term variable, e.g. `{{ term.myCustomField }}`.
+
 ## 1.0.3 - 2021-09-27
 
 ### Fixed

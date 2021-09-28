@@ -90,7 +90,12 @@ class Terms extends Component
 
                         $token = $term->uid . '-' . $index++;
                         $replacements[$token] = $replacement;
+
+                        /**
+                         * @deprecated Remove field values with version 2.0 and only use term to access all fields.
+                         */
                         $variables = $term->getFieldValues();
+                        $variables['term'] = $term;
 
                         try {
                             $usedTerms[$term->id] = $view->renderTemplate($glossary->tooltipTemplate, $variables, 'site');
