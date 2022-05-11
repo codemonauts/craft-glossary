@@ -4,66 +4,29 @@ namespace codemonauts\glossary\fieldlayoutelements;
 
 use Craft;
 use craft\base\ElementInterface;
-use craft\fieldlayoutelements\StandardTextField;
+use craft\fieldlayoutelements\TextField;
 
-class SynonymsField extends StandardTextField
+class SynonymsField extends TextField
 {
     /**
      * @inheritdoc
      */
-    public $mandatory = true;
+    public bool $mandatory = true;
 
     /**
      * @inheritdoc
      */
-    public $attribute = 'synonyms';
+    public string $attribute = 'synonyms';
 
     /**
      * @inheritdoc
      */
-    public $translatable = true;
+    public bool $translatable = true;
 
     /**
      * @inheritdoc
      */
-    public $required = false;
-
-    /**
-     * @inheritdoc
-     */
-    public $instructions = 'Comma separated list of Synonyms of the main term to also process.';
-
-    /**
-     * @inheritdoc
-     */
-    public function __construct($config = [])
-    {
-        unset(
-            $config['mandatory'],
-            $config['attribute'],
-            $config['translatable'],
-            $config['required'],
-        );
-
-        parent::__construct($config);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function fields(): array
-    {
-        $fields = parent::fields();
-
-        unset(
-            $fields['mandatory'],
-            $fields['attribute'],
-            $fields['translatable'],
-            $fields['required'],
-        );
-
-        return $fields;
-    }
+    public bool $required = false;
 
     /**
      * @inheritdoc
@@ -76,34 +39,8 @@ class SynonymsField extends StandardTextField
     /**
      * @inheritdoc
      */
-    protected function statusClass(ElementInterface $element = null, bool $static = false)
+    public function defaultInstructions(ElementInterface $element = null, bool $static = false): ?string
     {
-        if ($element && ($status = $element->getAttributeStatus('synonyms'))) {
-            return $status[0];
-        }
-
-        return null;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function statusLabel(ElementInterface $element = null, bool $static = false)
-    {
-        if ($element && ($status = $element->getAttributeStatus('synonyms'))) {
-            return $status[1];
-        }
-
-        return null;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function inputHtml(ElementInterface $element = null, bool $static = false)
-    {
-        $this->instructions = Craft::t('glossary', $this->instructions);
-
-        return parent::inputHtml($element, $static);
+        return Craft::t('glossary', 'Comma separated list of Synonyms of the main term to also process.');
     }
 }

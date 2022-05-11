@@ -3,36 +3,65 @@
 namespace codemonauts\glossary\elements;
 
 use codemonauts\glossary\elements\db\GlossaryQuery;
-use codemonauts\glossary\Glossary as GlossaryPlugin;
 use codemonauts\glossary\records\Glossary as GlossaryRecord;
 use codemonauts\glossary\resources\GlossaryFrontend;
 use Craft;
 use craft\base\Element;
 use craft\elements\db\ElementQueryInterface;
+use craft\elements\User;
+use craft\helpers\App;
 use craft\helpers\Db;
+use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use yii\base\Exception;
 
-/**
- * Class Glossary
- */
 class Glossary extends Element
 {
-    public $title;
-    public $handle;
-    public $default;
-    public $termTemplate;
-    public $tooltipTemplate;
-    public $css;
-    public $script;
-    public $fieldLayoutId;
+    /**
+     * @inerhitdoc
+     */
+    public ?string $title = null;
+    /**
+     * @inerhitdoc
+     */
+    public ?int $fieldLayoutId = null;
+
+    /**
+     * @var string The handle of the glossary.
+     */
+    public string $handle = '';
+
+    /**
+     * @var bool Whether the glossary is the default one.
+     */
+    public bool $default = false;
+
+    /**
+     * @var string|null The template to use for rendering the terms.
+     */
+    public ?string $termTemplate = null;
+
+    /**
+     * @var string The template to use for rendering the tooltips.
+     */
+    public string $tooltipTemplate = '';
+
+    /**
+     * @var string|null Optional CSS file to register when at least one term was found.
+     */
+    public ?string $css = null;
+
+    /**
+     * @var string|null Optional script file to register when at least one term was found.
+     */
+    public ?string $script = null;
 
     /**
      * @inheritDoc
      */
     public function __toString(): string
     {
-        return $this->title;
+        return (string)$this->title;
     }
 
     /**
@@ -70,17 +99,9 @@ class Glossary extends Element
     /**
      * @inheritdoc
      */
-    public function getIsEditable(): bool
+    public function cpEditUrl(): string
     {
-        return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getCpEditUrl(): string
-    {
-        return 'glossary/glossary/' . $this->id;
+        return UrlHelper::cpUrl('glossary/glossary/' . $this->canonicalId);
     }
 
     /**
@@ -209,8 +230,8 @@ class Glossary extends Element
         }
 
         $record->title = (string)$this->title;
-        $record->handle = (string)$this->handle;
-        $record->default = (bool)$this->default;
+        $record->handle = $this->handle;
+        $record->default = $this->default;
         $record->termTemplate = $this->termTemplate;
         $record->tooltipTemplate = $this->tooltipTemplate;
         $record->css = $this->css;
@@ -223,7 +244,7 @@ class Glossary extends Element
         if ($this->default) {
             $oldDefault = Glossary::find()
                 ->default(true)
-                ->id('not '.$this->id)
+                ->id('not ' . $this->id)
                 ->one();
 
             if ($oldDefault) {
@@ -261,12 +282,12 @@ class Glossary extends Element
 
         $view->registerAssetBundle(GlossaryFrontend::class);
 
-        if ($this->css !== '') {
-            $view->registerCssFile(Craft::parseEnv($this->css));
+        if ($this->css != '') {
+            $view->registerCssFile(App::parseEnv($this->css));
         }
 
-        if ($this->script !== '') {
-            $view->registerJsFile(Craft::parseEnv($this->script));
+        if ($this->script != '') {
+            $view->registerJsFile(App::parseEnv($this->script));
         }
     }
 
@@ -282,5 +303,37 @@ class Glossary extends Element
         foreach ($terms as $term) {
             Craft::$app->getElements()->deleteElement($term);
         }
+    }
+
+    /**
+     * @inerhitdoc
+     */
+    public function canView(User $user): bool
+    {
+        return $user->can('glossary:glossaryEdit');
+    }
+
+    /**
+     * @inerhitdoc
+     */
+    public function canSave(User $user): bool
+    {
+        return $user->can('glossary:glossaryEdit');
+    }
+
+    /**
+     * @inerhitdoc
+     */
+    public function canDelete(User $user): bool
+    {
+        return $user->can('glossary:glossaryEdit');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function canCreateDrafts(User $user): bool
+    {
+        return $user->can('glossary:glossaryEdit');
     }
 }

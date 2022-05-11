@@ -3,43 +3,44 @@
 namespace codemonauts\glossary\elements;
 
 use codemonauts\glossary\elements\db\TermQuery;
+use codemonauts\glossary\elements\Glossary as GlossaryElement;
 use codemonauts\glossary\records\Term as TermRecord;
 use codemonauts\glossary\Glossary as GlossaryPlugin;
 use Craft;
 use craft\base\Element;
 use craft\elements\db\ElementQueryInterface;
+use craft\elements\User;
+use craft\helpers\Cp;
+use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use yii\base\Exception;
 
-/**
- * Class Term
- */
 class Term extends Element
 {
     /**
      * @var string The term to match.
      */
-    public $term;
+    public string $term = '';
 
     /**
-     * @var string Synonyms to match.
+     * @var string|null Synonyms to match.
      */
-    public $synonyms;
+    public ?string $synonyms = null;
 
     /**
-     * @var int The glossary ID the term is associated with.
+     * @var int|null The glossary ID the term is associated with.
      */
-    public $glossaryId;
+    public ?int $glossaryId = null;
 
     /**
      * @var bool Should the term and synonyms match case sensitive?
      */
-    public $caseSensitive;
+    public bool $caseSensitive = false;
 
     /**
      * @var bool Match as substring?
      */
-    public $matchSubstring;
+    public bool $matchSubstring = false;
 
     /**
      * @inheritDoc
@@ -108,17 +109,9 @@ class Term extends Element
     /**
      * @inheritdoc
      */
-    public function getIsEditable(): bool
+    public function cpEditUrl(): string
     {
-        return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getCpEditUrl(): string
-    {
-        return 'glossary/term/' . $this->id;
+        return UrlHelper::cpUrl('glossary/term/' . $this->canonicalId);
     }
 
     /**
@@ -146,7 +139,7 @@ class Term extends Element
             ],
         ];
 
-        $glossaries = GlossaryPlugin::getInstance()->getGlossaries()->getAllGlossaries();
+        $glossaries = GlossaryPlugin::$plugin->getGlossaries()->getAllGlossaries();
         foreach ($glossaries as $glossary) {
             $sources[] = [
                 'key' => $glossary->handle,
@@ -256,7 +249,7 @@ class Term extends Element
             $glossary = Glossary::findOne();
         }
 
-        return $glossary !== null ? $glossary->getFieldLayout() : null;
+        return $glossary?->getFieldLayout();
     }
 
     /**
@@ -293,10 +286,95 @@ class Term extends Element
     {
         $rules = parent::defineRules();
 
-        $rules[] = [['term'], 'required'];
+        $rules[] = [['term'], 'required', 'on' => self::SCENARIO_LIVE];
         $rules[] = [['glossaryId'], 'integer'];
         $rules[] = [['caseSensitive', 'matchSubstring'], 'boolean'];
 
         return $rules;
+    }
+
+    /**
+     * @inerhitdoc
+     */
+    public function canView(User $user): bool
+    {
+        return $user->can('glossary:termEdit');
+    }
+
+    /**
+     * @inerhitdoc
+     */
+    public function canSave(User $user): bool
+    {
+        return $user->can('glossary:termEdit');
+    }
+
+    /**
+     * @inerhitdoc
+     */
+    public function canDelete(User $user): bool
+    {
+        return $user->can('glossary:termEdit');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function canCreateDrafts(User $user): bool
+    {
+        return $user->can('glossary:termEdit');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function metaFieldsHtml(bool $static): string
+    {
+        $fields = [];
+
+        $options = [];
+        $glossaries = GlossaryElement::findAll();
+        foreach ($glossaries as $glossary) {
+            $options[] = [
+                'label' => Craft::t('site', $glossary->title),
+                'value' => $glossary->id,
+            ];
+        }
+
+        if (!$static) {
+            $view = Craft::$app->getView();
+            $glossaryInputId = $view->namespaceInputId('glossary');
+            $js = <<<EOD
+(() => {
+    const \$typeInput = $('#$glossaryInputId');
+    const editor = \$typeInput.closest('form').data('elementEditor');
+    if (editor) {
+        editor.checkForm();
+    }
+})();
+EOD;
+            $view->registerJs($js);
+        }
+
+        $fields[] = Cp::selectFieldHtml([
+            'label' => Craft::t('glossary', 'Glossary'),
+            'id' => 'glossary',
+            'name' => 'glossaryId',
+            'value' => $this->glossaryId,
+            'options' => $options,
+            'disabled' => $static,
+        ]);
+
+        $fields[] = parent::metaFieldsHtml($static);
+
+        return implode("\n", $fields);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPostEditUrl(): ?string
+    {
+        return UrlHelper::cpUrl("glossary/terms");
     }
 }

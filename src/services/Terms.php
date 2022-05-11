@@ -13,7 +13,7 @@ use function Symfony\Component\String\s;
 
 class Terms extends Component
 {
-    protected $renderedTerms = '';
+    protected string $renderedTerms = '';
 
     /**
      * Returns all terms to search for.
@@ -28,7 +28,7 @@ class Terms extends Component
             $term->term,
         ];
 
-        if ($term->synonyms !== '') {
+        if ($term->synonyms != '') {
             $synonyms = explode(',', $term->synonyms);
             $terms = array_merge($terms, $synonyms);
         }
@@ -50,7 +50,7 @@ class Terms extends Component
         $originalText = $text;
 
         try {
-            $termTemplate = $glossary->termTemplate !== '' ? $glossary->termTemplate : '<span>{{ text }}</span>';
+            $termTemplate = $glossary->termTemplate != '' ? $glossary->termTemplate : '<span>{{ text }}</span>';
             $replacements = [];
             $terms = Term::find()->glossary($glossary)->all();
             $usedTerms = [];
@@ -108,6 +108,7 @@ class Terms extends Component
                     });
                 }
             }
+
 
             foreach ($replacements as $token => $replacement) {
                 $text = s($text)->replace('{{%' . $token . '%}}', $replacement);

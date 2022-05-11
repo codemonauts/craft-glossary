@@ -2,8 +2,11 @@
 
 namespace codemonauts\glossary\controllers;
 
+use codemonauts\glossary\elements\Glossary;
 use codemonauts\glossary\elements\Glossary as GlossaryElement;
 use Craft;
+use craft\base\Element;
+use craft\helpers\UrlHelper;
 use craft\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;

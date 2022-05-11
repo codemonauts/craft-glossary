@@ -2,11 +2,15 @@
 
 namespace codemonauts\glossary\controllers;
 
+use codemonauts\glossary\Glossary as GlossaryPlugin;
+use codemonauts\glossary\elements\Glossary;
 use codemonauts\glossary\elements\Glossary as GlossaryElement;
+use codemonauts\glossary\elements\Term;
 use codemonauts\glossary\elements\Term as TermElement;
-use codemonauts\glossary\resources\GlossarySwitcher;
 use Craft;
 use craft\base\Element;
+use craft\elements\Entry;
+use craft\helpers\UrlHelper;
 use craft\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -29,126 +33,48 @@ class TermController extends Controller
         return $this->renderTemplate('glossary/term/index');
     }
 
-    public function actionEdit(int $termId = null, TermElement $term = null): Response
+    public function actionCreate(): ?Response
     {
-        // Find or create new term to edit
-        if ($termId !== null) {
-            if ($term === null) {
-                $term = TermElement::findOne(['id' => $termId, 'status' => null]);
-                if (!$term) {
-                    throw new NotFoundHttpException();
-                }
+        $user = Craft::$app->getUser()->getIdentity();
+
+        // Create & populate the draft
+        $term = Craft::createObject(Term::class);
+        $term->enabled = true;
+
+        // Glossary
+        $defaultGlossary = GlossaryPlugin::$plugin->getGlossaries()->getDefaultGlossary();
+        $term->glossaryId = $defaultGlossary->id;
+
+        // Custom fields
+        foreach ($term->getFieldLayout()->getCustomFields() as $field) {
+            if (($value = $this->request->getQueryParam($field->handle)) !== null) {
+                $term->setFieldValue($field->handle, $value);
             }
-        } else if ($term === null) {
-            $term = new TermElement();
-            $term->id = 0;
         }
 
-        // Register JS to switch glossary
-        $this->getView()->registerAssetBundle(GlossarySwitcher::class);
-        $this->getView()->registerJs('new Craft.GlossarySwitcher();');
-
-        // Set variables
-        $variables['term'] = $term;
-        $variables['title'] = $term->id ? 'Edit term' : 'Create term';
-        $variables['continueEditingUrl'] = 'glossary/term/{termId}';
-        $variables['isNew'] = !$term->id;
-
-        // Get all glossaries and prepare for switcher
-        $variables['glossaries'] = [];
-        $glossaries = GlossaryElement::findAll();
-        foreach ($glossaries as $glossary) {
-            $variables['glossaries'][] = [
-                'label' => Craft::t('site', $glossary->title),
-                'value' => $glossary->id,
-            ];
+        // Save it
+        $term->setScenario(Element::SCENARIO_ESSENTIALS);
+        if (!Craft::$app->getDrafts()->saveElementAsDraft($term, $user->getId(), null, null, false)) {
+            return $this->asModelFailure($term, Craft::t('app', 'Couldn’t create {type}.', [
+                'type' => Entry::lowerDisplayName(),
+            ]), 'entry');
         }
 
-        // Create custom field layout
-        $fieldLayout = $term->getFieldLayout();
-        $form = $fieldLayout->createForm($term);
-        $variables['tabs'] = $form->getTabMenu();
-        $variables['fieldsHtml'] = $form->render();
+        $editUrl = $term->getCpEditUrl();
 
-        return $this->renderTemplate('glossary/term/_edit', $variables);
-    }
+        $response = $this->asModelSuccess($term, Craft::t('app', '{type} created.', [
+            'type' => Entry::displayName(),
+        ]), 'entry', array_filter([
+            'cpEditUrl' => $this->request->isCpRequest ? $editUrl : null,
+        ]));
 
-    public function actionSave(): ?Response
-    {
-        $this->requirePostRequest();
-
-        $request = Craft::$app->getRequest();
-
-        // Find or create term to save
-        $termId = $request->getBodyParam('termId');
-        if ($termId) {
-            $term = TermElement::findOne(['id' => $termId, 'status' => null]);
-        } else {
-            $term = new TermElement();
+        if (!$this->request->getAcceptsJson()) {
+            $response->redirect(UrlHelper::urlWithParams($editUrl, [
+                'fresh' => 1,
+            ]));
         }
 
-        // Set element fields
-        $term->term = $request->getBodyParam('term');
-        $term->synonyms = $request->getBodyParam('synonyms');
-        $term->enabled = (bool)$request->getBodyParam('enabled');
-        $term->glossaryId = $request->getBodyParam('glossaryId');
-        $term->caseSensitive = $request->getBodyParam('caseSensitive');
-        $term->matchSubstring = $request->getBodyParam('matchSubstring');
-
-        // Set custom fields
-        $term->setFieldValuesFromRequest('fields');
-        $term->setScenario(Element::SCENARIO_LIVE);
-
-        // Save term
-        if (Craft::$app->getElements()->saveElement($term)) {
-            Craft::$app->getSession()->setNotice('Term saved.');
-
-            return $this->redirectToPostedUrl($term);
-        }
-
-        Craft::$app->getSession()->setError('Term not saved.');
-
-        Craft::$app->getUrlManager()->setRouteParams([
-            'term' => $term,
-        ]);
-
-        return null;
-    }
-
-    public function actionSwitchGlossary(): Response
-    {
-        $this->requirePostRequest();
-        $this->requireAcceptsJson();
-
-        $request = Craft::$app->getRequest();
-        $view = $this->getView();
-
-        // Create new term and set element fields to posted values
-        $term = new TermElement();
-        $term->id = $request->getBodyParam('termId');
-        $term->enabled = (bool)$request->getBodyParam('enabled');
-        $term->term = $request->getBodyParam('term');
-        $term->synonyms = $request->getBodyParam('synonyms');
-        $term->glossaryId = $request->getBodyParam('glossaryId');
-        $term->caseSensitive = $request->getBodyParam('caseSensitive');
-        $term->matchSubstring = $request->getBodyParam('matchSubstring');
-        $term->setFieldValuesFromRequest('fields');
-
-        // Get new glossary to switch to
-        $glossary = GlossaryElement::findOne(['id' => $term->glossaryId]);
-
-        // Create new custom field layout based on new glossary
-        $form = $glossary->getFieldLayout()->createForm($term);
-        $tabs = $form->getTabMenu();
-
-        return $this->asJson([
-            'tabsHtml' => count($tabs) > 1 ? $view->renderTemplate('_includes/tabs', [
-                'tabs' => $tabs,
-            ]) : null,
-            'fieldsHtml' => $form->render(),
-            'headHtml' => $view->getHeadHtml(),
-            'bodyHtml' => $view->getBodyHtml(),
-        ]);
+        return $response;
     }
 
     public function actionDelete(): ?Response
@@ -158,7 +84,7 @@ class TermController extends Controller
         // Get term to delete
         $termId = Craft::$app->getRequest()->getRequiredBodyParam('termId');
         $term = TermElement::find()
-            ->anyStatus()
+            ->status(null)
             ->id($termId)
             ->one();
 

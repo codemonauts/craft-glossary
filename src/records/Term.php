@@ -14,7 +14,7 @@ use yii\db\ActiveQueryInterface;
  * @property string $term The term.
  * @property string $synonyms Synonyms of the term.
  * @property int $glossaryId The ID of the field layout.
- * @property bool $caseSensitive Match the term and synonyms case sensitive.
+ * @property bool $caseSensitive Match the term and synonyms case-sensitive.
  * @property bool $matchSubstring Match as substring.
  * @property Element $element Element
  */

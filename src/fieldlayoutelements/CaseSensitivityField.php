@@ -4,71 +4,34 @@ namespace codemonauts\glossary\fieldlayoutelements;
 
 use Craft;
 use craft\base\ElementInterface;
-use craft\fieldlayoutelements\StandardField;
+use craft\fieldlayoutelements\BaseNativeField;
 
-class CaseSensitivityField extends StandardField
+class CaseSensitivityField extends BaseNativeField
 {
     /**
      * @inheritdoc
      */
-    public $mandatory = true;
+    public bool $mandatory = true;
 
     /**
      * @inheritdoc
      */
-    public $attribute = 'caseSensitive';
+    public string $attribute = 'caseSensitive';
 
     /**
      * @var string Label for 'on' status.
      */
-    public $onLabel = 'sensitive';
+    public string $onLabel = 'sensitive';
 
     /**
      * @var string Label for 'off' status.
      */
-    public $offLabel = 'insensitive';
+    public string $offLabel = 'insensitive';
 
     /**
      * @var bool Whether the input should get a `disabled` attribute.
      */
-    public $disabled = false;
-
-    /**
-     * @inheritdoc
-     */
-    public $instructions = 'How the term and synonyms should match when searching.';
-
-    /**
-     * @inheritdoc
-     */
-    public function __construct($config = [])
-    {
-        unset(
-            $config['mandatory'],
-            $config['attribute'],
-            $config['onLabel'],
-            $config['offLabel'],
-        );
-
-        parent::__construct($config);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function fields(): array
-    {
-        $fields = parent::fields();
-
-        unset(
-            $fields['mandatory'],
-            $fields['attribute'],
-            $fields['onLabel'],
-            $fields['offLabel'],
-        );
-
-        return $fields;
-    }
+    public bool $disabled = false;
 
     /**
      * @inheritdoc
@@ -81,25 +44,9 @@ class CaseSensitivityField extends StandardField
     /**
      * @inheritdoc
      */
-    protected function statusClass(ElementInterface $element = null, bool $static = false)
+    public function defaultInstructions(ElementInterface $element = null, bool $static = false): ?string
     {
-        if ($element && ($status = $element->getAttributeStatus('caseSensitivity'))) {
-            return $status[0];
-        }
-
-        return null;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function statusLabel(ElementInterface $element = null, bool $static = false)
-    {
-        if ($element && ($status = $element->getAttributeStatus('caseSensitivity'))) {
-            return $status[1];
-        }
-
-        return null;
+        return Craft::t('glossary', 'How the term and synonyms should match when searching.');
     }
 
     /**
@@ -107,13 +54,12 @@ class CaseSensitivityField extends StandardField
      */
     protected function inputHtml(ElementInterface $element = null, bool $static = false): ?string
     {
-        $this->instructions = Craft::t('glossary', $this->instructions);
-
         return Craft::$app->getView()->renderTemplate('_includes/forms/lightswitch', [
             'id' => $this->id(),
             'on' => $this->value($element),
             'name' => $this->name ?? $this->attribute(),
             'disabled' => $static || $this->disabled,
+            'instructions' => $this->instructions(),
             'onLabel' => Craft::t('glossary', $this->onLabel),
             'offLabel' => Craft::t('glossary', $this->offLabel),
         ]);

@@ -2,6 +2,7 @@
 
 namespace codemonauts\glossary;
 
+use codemonauts\glossary\elements\Term as TermElement;
 use codemonauts\glossary\fieldlayoutelements\CaseSensitivityField;
 use codemonauts\glossary\fieldlayoutelements\MatchSubstringField;
 use codemonauts\glossary\fieldlayoutelements\SynonymsField;
@@ -14,9 +15,11 @@ use codemonauts\glossary\variables\GlossaryVariable;
 use Craft;
 use craft\base\Plugin;
 use craft\events\DefineFieldLayoutFieldsEvent;
+use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\models\FieldLayout;
+use craft\services\Elements;
 use craft\services\Gc;
 use craft\services\UserPermissions;
 use craft\web\twig\variables\CraftVariable;
@@ -24,24 +27,25 @@ use craft\web\UrlManager;
 use yii\base\Event;
 
 /**
- * Class Glossary
- *
  * @property Glossaries $glossaries
  * @property Terms $terms
  */
 class Glossary extends Plugin
 {
     /**
-     * @inheritDoc
+     * @var \codemonauts\glossary\Glossary
      */
-    public $hasCpSettings = false;
-
-    public $hasCpSection = true;
+    public static Glossary $plugin;
 
     /**
      * @inheritDoc
      */
-    public $schemaVersion = '1.0.2';
+    public bool $hasCpSection = true;
+
+    /**
+     * @inheritDoc
+     */
+    public string $schemaVersion = '1.0.2';
 
     /**
      * @inheritDoc
@@ -50,11 +54,19 @@ class Glossary extends Plugin
     {
         parent::init();
 
+        self::$plugin = $this;
+
         // Register services as components
         $this->setComponents([
             'glossaries' => Glossaries::class,
             'terms' => Terms::class,
         ]);
+
+        // Register elements
+        Event::on(Elements::class, Elements::EVENT_REGISTER_ELEMENT_TYPES, function (RegisterComponentTypesEvent $event) {
+            $event->types[] = GlossaryElement::class;
+            $event->types[] = TermElement::class;
+        });
 
         // Register Twig extension
         if (Craft::$app->request->getIsSiteRequest()) {
@@ -93,9 +105,12 @@ class Glossary extends Plugin
     {
         // Register permissions
         Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function (RegisterUserPermissionsEvent $event) {
-            $event->permissions['glossary'] = [
-                'glossary:glossaryEdit' => ['label' => Craft::t('glossary', 'Edit Glossaries')],
-                'glossary:termEdit' => ['label' => Craft::t('glossary', 'Edit Terms')],
+            $event->permissions[] = [
+                'heading' => Craft::t('glossary', 'Glossary'),
+                'permissions' => [
+                    'glossary:glossaryEdit' => ['label' => Craft::t('glossary', 'Edit Glossaries')],
+                    'glossary:termEdit' => ['label' => Craft::t('glossary', 'Edit Terms')],
+                ],
             ];
         });
 
@@ -104,14 +119,17 @@ class Glossary extends Plugin
             $event->rules['glossary/glossaries'] = 'glossary/glossary/index';
             $event->rules['glossary/glossary/new'] = 'glossary/glossary/edit';
             $event->rules['glossary/glossary/<glossaryId:\d+>'] = 'glossary/glossary/edit';
+
             $event->rules['glossary/terms'] = 'glossary/term/index';
-            $event->rules['glossary/term/new'] = 'glossary/term/edit';
-            $event->rules['glossary/term/<termId:\d+>'] = 'glossary/term/edit';
+            $event->rules['glossary/term/new'] = 'glossary/term/create';
+            $event->rules['glossary/term/<elementId:\d+>'] = 'elements/edit';
         });
 
         // Register field layout
-        Event::on(FieldLayout::class, FieldLayout::EVENT_DEFINE_STANDARD_FIELDS, function (DefineFieldLayoutFieldsEvent $event) {
-            /** @var FieldLayout $fieldLayout */
+        Event::on(FieldLayout::class, FieldLayout::EVENT_DEFINE_NATIVE_FIELDS, function (DefineFieldLayoutFieldsEvent $event) {
+            /**
+             * @var FieldLayout $fieldLayout
+             */
             $fieldLayout = $event->sender;
 
             if ($fieldLayout->type === GlossaryElement::class) {

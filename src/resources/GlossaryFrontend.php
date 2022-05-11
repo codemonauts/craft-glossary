@@ -3,7 +3,6 @@
 namespace codemonauts\glossary\resources;
 
 use craft\web\AssetBundle;
-use craft\web\assets\cp\CpAsset;
 
 class GlossaryFrontend extends AssetBundle
 {

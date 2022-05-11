@@ -4,80 +4,39 @@ namespace codemonauts\glossary\fieldlayoutelements;
 
 use Craft;
 use craft\base\ElementInterface;
-use craft\fieldlayoutelements\StandardTextField;
+use craft\fieldlayoutelements\TextField;
 
-class TermField extends StandardTextField
+class TermField extends TextField
 {
     /**
      * @inheritdoc
      */
-    public $mandatory = true;
+    public bool $mandatory = true;
 
     /**
      * @inheritdoc
      */
-    public $attribute = 'term';
+    public string $attribute = 'term';
 
     /**
      * @inheritdoc
      */
-    public $translatable = true;
+    public bool $translatable = true;
 
     /**
      * @inheritdoc
      */
-    public $maxlength = 255;
+    public ?int $maxlength = 255;
 
     /**
      * @inheritdoc
      */
-    public $required = true;
+    public bool $required = true;
 
     /**
      * @inheritdoc
      */
-    public $autofocus = true;
-
-    /**
-     * @inheritdoc
-     */
-    public $instructions = 'The main term to process.';
-
-    /**
-     * @inheritdoc
-     */
-    public function __construct($config = [])
-    {
-        unset(
-            $config['mandatory'],
-            $config['attribute'],
-            $config['translatable'],
-            $config['maxlength'],
-            $config['required'],
-            $config['autofocus']
-        );
-
-        parent::__construct($config);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function fields(): array
-    {
-        $fields = parent::fields();
-
-        unset(
-            $fields['mandatory'],
-            $fields['attribute'],
-            $fields['translatable'],
-            $fields['maxlength'],
-            $fields['required'],
-            $fields['autofocus']
-        );
-
-        return $fields;
-    }
+    public bool $autofocus = true;
 
     /**
      * @inheritdoc
@@ -90,34 +49,8 @@ class TermField extends StandardTextField
     /**
      * @inheritdoc
      */
-    protected function statusClass(ElementInterface $element = null, bool $static = false)
+    public function defaultInstructions(ElementInterface $element = null, bool $static = false): ?string
     {
-        if ($element && ($status = $element->getAttributeStatus('term'))) {
-            return $status[0];
-        }
-
-        return null;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function statusLabel(ElementInterface $element = null, bool $static = false)
-    {
-        if ($element && ($status = $element->getAttributeStatus('term'))) {
-            return $status[1];
-        }
-
-        return null;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function inputHtml(ElementInterface $element = null, bool $static = false)
-    {
-        $this->instructions = Craft::t('glossary', $this->instructions);
-
-        return parent::inputHtml($element, $static);
+        return Craft::t('glossary', 'The main term to process.');
     }
 }

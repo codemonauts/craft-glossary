@@ -1,9 +1,9 @@
-{% extends "_layouts/element" %}
+{% extends "_layouts/cp" %}
 {% import "_includes/forms" as forms %}
 {% set element = term %}
 {% set selectedSubnavItem = 'terms' %}
-{% set fullPageForm = false %}
-{% set showStatusToggles = true %}
+{% set fullPageForm = true %}
+{% set details = element.getSidebarHtml(false) %}
 
 {% block actionButton %}
     <div class="btngroup">
@@ -30,19 +30,6 @@
             {% endif %}
         </div>
     </div>
-{% endblock %}
-
-{% block settings %}
-    {{ forms.selectField({
-        status: term.getAttributeStatus('glossaryId'),
-        label: "Glossary"|t('glossary'),
-        id: 'glossary',
-        name: 'glossaryId',
-        value: term.glossaryId,
-        options: glossaries,
-        errors: term.getErrors('glossaryId'),
-    }) }}
-    {{ parent() }}
 {% endblock %}
 
 {% block content %}

@@ -1,5 +1,16 @@
 # Release Notes for Glossary for Craft CMS
 
+## 2.0.0 - 2022-05-04
+
+### Added
+
+- Craft CMS 4 compatibility.
+
+### Changed
+
+- Requires Craft CMS >= 4.0
+- Update tippy.js to 6.3.7
+
 ## 1.0.5 - 2021-09-28
 
 ### Fixed

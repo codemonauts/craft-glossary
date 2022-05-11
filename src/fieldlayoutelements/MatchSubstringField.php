@@ -4,71 +4,34 @@ namespace codemonauts\glossary\fieldlayoutelements;
 
 use Craft;
 use craft\base\ElementInterface;
-use craft\fieldlayoutelements\StandardField;
+use craft\fieldlayoutelements\BaseNativeField;
 
-class MatchSubstringField extends StandardField
+class MatchSubstringField extends BaseNativeField
 {
     /**
      * @inheritdoc
      */
-    public $mandatory = true;
+    public bool $mandatory = true;
 
     /**
      * @inheritdoc
      */
-    public $attribute = 'matchSubstring';
+    public string $attribute = 'matchSubstring';
 
     /**
      * @var string Label for 'off' status.
      */
-    public $offLabel = 'full word only';
+    public string $offLabel = 'full word only';
 
     /**
      * @var string Label for 'on' status.
      */
-    public $onLabel = 'substring';
+    public string $onLabel = 'substring';
 
     /**
      * @var bool Whether the input should get a `disabled` attribute.
      */
-    public $disabled = false;
-
-    /**
-     * @inheritdoc
-     */
-    public $instructions = 'Should the term and the synonyms match also as substrings or only as full words?';
-
-    /**
-     * @inheritdoc
-     */
-    public function __construct($config = [])
-    {
-        unset(
-            $config['mandatory'],
-            $config['attribute'],
-            $config['onLabel'],
-            $config['offLabel'],
-        );
-
-        parent::__construct($config);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function fields(): array
-    {
-        $fields = parent::fields();
-
-        unset(
-            $fields['mandatory'],
-            $fields['attribute'],
-            $fields['onLabel'],
-            $fields['offLabel'],
-        );
-
-        return $fields;
-    }
+    public bool $disabled = false;
 
     /**
      * @inheritdoc
@@ -81,25 +44,9 @@ class MatchSubstringField extends StandardField
     /**
      * @inheritdoc
      */
-    protected function statusClass(ElementInterface $element = null, bool $static = false)
+    public function defaultInstructions(ElementInterface $element = null, bool $static = false): ?string
     {
-        if ($element && ($status = $element->getAttributeStatus('caseSensitivity'))) {
-            return $status[0];
-        }
-
-        return null;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function statusLabel(ElementInterface $element = null, bool $static = false)
-    {
-        if ($element && ($status = $element->getAttributeStatus('caseSensitivity'))) {
-            return $status[1];
-        }
-
-        return null;
+        return Craft::t('glossary', 'Should the term and the synonyms match also as substrings or only as full words?');
     }
 
     /**
@@ -114,6 +61,7 @@ class MatchSubstringField extends StandardField
             'on' => $this->value($element),
             'name' => $this->name ?? $this->attribute(),
             'disabled' => $static || $this->disabled,
+            'instructions' => $this->instructions(),
             'onLabel' => Craft::t('glossary', $this->onLabel),
             'offLabel' => Craft::t('glossary', $this->offLabel),
         ]);
