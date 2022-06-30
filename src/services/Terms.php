@@ -13,7 +13,8 @@ use function Symfony\Component\String\s;
 
 class Terms extends Component
 {
-    protected string $renderedTerms = '';
+    protected $renderedTerms = '';
+    private $usedTerms = [];
 
     /**
      * Returns all terms to search for.
@@ -28,7 +29,7 @@ class Terms extends Component
             $term->term,
         ];
 
-        if ($term->synonyms != '') {
+        if ($term->synonyms !== '') {
             $synonyms = explode(',', $term->synonyms);
             $terms = array_merge($terms, $synonyms);
         }
@@ -50,10 +51,9 @@ class Terms extends Component
         $originalText = $text;
 
         try {
-            $termTemplate = $glossary->termTemplate != '' ? $glossary->termTemplate : '<span>{{ text }}</span>';
+            $termTemplate = $glossary->termTemplate !== '' ? $glossary->termTemplate : '<span>{{ text }}</span>';
             $replacements = [];
             $terms = Term::find()->glossary($glossary)->all();
-            $usedTerms = [];
 
             foreach ($terms as $term) {
                 $template = Html::modifyTagAttributes($termTemplate, [
@@ -74,7 +74,7 @@ class Terms extends Component
                     if (!$term->caseSensitive) {
                         $pattern .= 'i';
                     }
-                    $text = s($text)->replaceMatches($pattern, function ($matches) use ($term, $template, &$replacements, &$index, $view, &$usedTerms, $glossary) {
+                    $text = s($text)->replaceMatches($pattern, function ($matches) use ($term, $template, &$replacements, &$index, $view, $glossary) {
                         try {
                             $replacement = trim($view->renderString($template, [
                                 'term' => $term,
@@ -99,7 +99,7 @@ class Terms extends Component
                         $variables['term'] = $term;
 
                         try {
-                            $usedTerms[$term->id] = $view->renderTemplate($glossary->tooltipTemplate, $variables, 'site');
+                            $this->usedTerms[$term->id] = $view->renderTemplate($glossary->tooltipTemplate, $variables, 'site');
                         } catch (SyntaxError $e) {
                             Craft::error($e->getMessage(), 'glossary');
                         }
@@ -109,13 +109,12 @@ class Terms extends Component
                 }
             }
 
-
             foreach ($replacements as $token => $replacement) {
                 $text = s($text)->replace('{{%' . $token . '%}}', $replacement);
             }
 
             $renderedTerms = '';
-            foreach ($usedTerms as $id => $usedTerm) {
+            foreach ($this->usedTerms as $id => $usedTerm) {
                 $renderedTerms .= Html::tag('div', $usedTerm, [
                     'id' => 'term-' . $id,
                 ]);
