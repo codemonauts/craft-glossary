@@ -287,6 +287,7 @@ class Term extends Element
         $rules = parent::defineRules();
 
         $rules[] = [['term'], 'required', 'on' => self::SCENARIO_LIVE];
+        $rules[] = [['term', 'synonyms'], 'trim'];
         $rules[] = [['glossaryId'], 'integer'];
         $rules[] = [['caseSensitive', 'matchSubstring'], 'boolean'];
 

@@ -5,6 +5,7 @@ namespace codemonauts\glossary\services;
 use codemonauts\glossary\elements\Glossary;
 use codemonauts\glossary\elements\Term;
 use Craft;
+use craft\helpers\ArrayHelper;
 use craft\helpers\Html;
 use Exception;
 use Twig\Error\SyntaxError;
@@ -13,8 +14,9 @@ use function Symfony\Component\String\s;
 
 class Terms extends Component
 {
-    protected $renderedTerms = '';
-    private $usedTerms = [];
+    protected string $renderedTerms = '';
+
+    protected array $usedTerms = [];
 
     /**
      * Returns all terms to search for.
@@ -29,12 +31,12 @@ class Terms extends Component
             $term->term,
         ];
 
-        if ($term->synonyms !== '') {
+        if (!empty($term->synonyms)) {
             $synonyms = explode(',', $term->synonyms);
             $terms = array_merge($terms, $synonyms);
         }
 
-        return $terms;
+        return ArrayHelper::filterEmptyStringsFromArray($terms);
     }
 
     /**
@@ -51,7 +53,7 @@ class Terms extends Component
         $originalText = $text;
 
         try {
-            $termTemplate = $glossary->termTemplate !== '' ? $glossary->termTemplate : '<span>{{ text }}</span>';
+            $termTemplate = !empty($glossary->termTemplate) ? $glossary->termTemplate : '<span>{{ text }}</span>';
             $replacements = [];
             $terms = Term::find()->glossary($glossary)->all();
 

@@ -1,5 +1,12 @@
 # Release Notes for Glossary Plugin
 
+## 2.0.1 - 2022-12-15
+
+### Fixed
+
+- Missing definitions when applying the glossary multiple times. (#5)
+- Remove empty strings from terms breaking the frontend. (#7)
+
 ## 2.0.0 - 2022-05-04
 
 ### Added
