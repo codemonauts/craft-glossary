@@ -1,4 +1,4 @@
-# Release Notes for Glossary for Craft CMS
+# Release Notes for Glossary Plugin
 
 ## 2.0.0 - 2022-05-04
 
@@ -21,7 +21,7 @@
 
 ### Added
 
-- Add the term element to the term template variables. So you can now acces the hole term element within the template.
+- Add the term element to the term template variables. So you can now access the hole term element within the template.
 
 ### Deprecated
 
@@ -45,13 +45,15 @@
 ### Added
 
 - Added translation. Added German translation (thanks to @emsuiko).
-- You can now iterate over terms in templates like `{{ for term in craft.glossary.terms.glossary('myGlossary').all() }}`. 
+- You can now iterate over terms in templates like `{{ for term in craft.glossary.terms.glossary('myGlossary').all() }}`
+  .
 
 ### Fixed
 
 - Fixed an error when creating a new term and no default glossary exists.
-- If the current user in the CP has only permissions to edit terms, the redirect will respect this now and redirects the user to the terms instead of the glossaries. 
-- In some circumstances you could have more than one default glossary. This is fixed. 
+- If the current user in the CP has only permissions to edit terms, the redirect will respect this now and redirects the
+  user to the terms instead of the glossaries.
+- In some circumstances you could have more than one default glossary. This is fixed.
 
 ## 1.0.0 - 2021-07-20
 
