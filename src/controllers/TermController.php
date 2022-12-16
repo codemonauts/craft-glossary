@@ -51,7 +51,7 @@ class TermController extends Controller
         // Set variables
         $variables['term'] = $term;
         $variables['title'] = $term->id ? 'Edit term' : 'Create term';
-        $variables['continueEditingUrl'] = 'glossary/term/{termId}';
+        $variables['continueEditingUrl'] = 'glossary/term/{id}';
         $variables['isNew'] = !$term->id;
 
         // Get all glossaries and prepare for switcher

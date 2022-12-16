@@ -1,7 +1,7 @@
 {
   "name": "codemonauts/craft-glossary",
   "description": "Add glossaries with tooltips to Craft CMS.",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "type": "craft-plugin",
   "keywords": [
     "craft",

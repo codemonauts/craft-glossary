@@ -2,8 +2,9 @@
 {% import "_includes/forms" as forms %}
 {% set element = term %}
 {% set selectedSubnavItem = 'terms' %}
-{% set fullPageForm = false %}
-{% set showStatusToggles = true %}
+{% set fullPageForm = true %}
+{% set canUpdateSource = true %}
+{% set saveShortcutRedirect = continueEditingUrl %}
 
 {% block actionButton %}
     <div class="btngroup">

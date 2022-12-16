@@ -43,7 +43,7 @@ class GlossaryController extends Controller
         // Set variables
         $variables['glossary'] = $glossary;
         $variables['title'] = $glossary->id ? 'Edit glossary' : 'Create glossary';
-        $variables['continueEditingUrl'] = 'glossary/glossary/{glossaryId}';
+        $variables['continueEditingUrl'] = 'glossary/glossary/{id}';
         $variables['isNew'] = !$glossary->id;
         $variables['fieldLayout'] = $glossary->getFieldLayout();
 

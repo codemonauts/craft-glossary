@@ -294,6 +294,7 @@ class Term extends Element
         $rules = parent::defineRules();
 
         $rules[] = [['term'], 'required'];
+        $rules[] = [['term', 'synonyms'], 'trim'];
         $rules[] = [['glossaryId'], 'integer'];
         $rules[] = [['caseSensitive', 'matchSubstring'], 'boolean'];
 

@@ -8,7 +8,7 @@ A glossary plugin for Craft CMS.
 
 ## Requirements
 
- * Craft CMS >= 3.5.0
+* Craft CMS >= 3.5.0
 
 ## Installation
 
@@ -17,7 +17,7 @@ Open your terminal and go to your Craft project:
 ``` shell
 cd /path/to/project
 composer require codemonauts/craft-glossary
-./craft install/plugin glossary
+./craft plugin/install glossary
 ```
 
 ## Usage

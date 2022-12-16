@@ -1,5 +1,13 @@
 # Release Notes for Glossary for Craft CMS
 
+## 1.0.6 - 2022-12-16
+
+### Fixed
+
+- Missing definitions when applying the glossary multiple times. (#5)
+- Remove empty strings from terms breaking the frontend. (#7)
+- Fixed shortcut to save terms and glossaries. (#8)
+
 ## 1.0.5 - 2021-09-28
 
 ### Fixed
@@ -10,7 +18,7 @@
 
 ### Added
 
-- Add the term element to the term template variables. So you can now acces the hole term element within the template.
+- Add the term element to the term template variables. So you can now access the hole term element within the template.
 
 ### Deprecated
 
