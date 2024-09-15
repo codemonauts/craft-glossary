@@ -11,6 +11,7 @@ use Exception;
 use Twig\Error\SyntaxError;
 use yii\base\Component;
 use function Symfony\Component\String\s;
+use craft\elements\Entry;
 
 class Terms extends Component
 {
@@ -99,6 +100,17 @@ class Terms extends Component
                          */
                         $variables = $term->getFieldValues();
                         $variables['term'] = $term;
+
+                        // Construct the search string
+                        $searchString = 'title:"' . $term . '"';
+
+                        // Perform the search
+                        $entry = Entry::find()
+                            ->section('glossary')
+                            ->search($searchString)
+                            ->one();
+
+                        $variables['caption'] = $entry->caption;
 
                         try {
                             $this->usedTerms[$term->id] = $view->renderTemplate($glossary->tooltipTemplate, $variables, 'site');

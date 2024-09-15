@@ -26,7 +26,8 @@ class TermQuery extends ElementQuery
     public function glossary($value): TermQuery
     {
         if ($value instanceof GlossaryElement) {
-            $this->glossaryId = $value->id;
+            // $this->glossaryId = $value->id;
+            $this->glossaryId = $value['id'];
         } elseif ($value !== null) {
             $this->glossaryId = GlossaryRecord::find()
                 ->select(['id'])

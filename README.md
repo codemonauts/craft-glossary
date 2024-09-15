@@ -8,7 +8,7 @@ A glossary plugin for Craft CMS.
 
 ## Requirements
 
-* Craft CMS >= 4.0.0
+* Craft CMS >= 5.0.0
 
 ## Installation
 

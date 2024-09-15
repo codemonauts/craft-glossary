@@ -1,5 +1,11 @@
 # Release Notes for Glossary Plugin
 
+## 3.1.0 - 2024-09-15
+
+### Fixed
+
+- Workaround twig template deprecations that cause errors.
+
 ## 2.0.1 - 2022-12-15
 
 ### Fixed
