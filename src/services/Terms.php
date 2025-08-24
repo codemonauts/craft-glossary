@@ -8,7 +8,9 @@ use Craft;
 use craft\helpers\ArrayHelper;
 use craft\helpers\Html;
 use Exception;
+use Twig\Environment as TwigEnvironment;
 use Twig\Error\SyntaxError;
+use Twig\Loader\ArrayLoader;
 use yii\base\Component;
 use function Symfony\Component\String\s;
 
@@ -78,10 +80,64 @@ class Terms extends Component
                     }
                     $text = s($text)->replaceMatches($pattern, function ($matches) use ($term, $template, &$replacements, &$index, $view, $glossary) {
                         try {
+                            /**
+                             * @warning
+                             * $view->renderString(...) internally triggers the instantiation of Twig\Node\Node,
+                             * which is deprecated since Twig 3.15 and will become abstract in Twig 4.0.
+                             *
+                             * This results in a runtime warning or exception in environments that enforce deprecation policies,
+                             * particularly when Symfony's String component is used with deprecation handling enabled.
+                             *
+                             * Exception thrown:
+                             * Symfony\Component\String\Exception\InvalidArgumentException:
+                             * "Since twig/twig 3.15: Instantiating 'Twig\Node\Node' directly is deprecated; the class will become abstract in 4.0"
+                             *
+                             * Workaround:
+                             * Perform a whitespace-insensitive placeholder substitution for all variables inside the template string.
+                             * Supports {{ text }}, {{ term }}, and {{ term.fieldName }} syntax manually, without relying on Twig rendering.*
+                             *
+                             * This avoids triggering deprecated internal behavior and ensures future compatibility with Twig 4.
+                             *
+                             * @see https://github.com/twigphp/Twig/releases/tag/v3.15.0
+                             * @see https://github.com/codemonauts/craft-glossary/issues/13
+                             * @see https://github.com/codemonauts/craft-glossary/issues/13
+                             */
+                            /*
                             $replacement = trim($view->renderString($template, [
                                 'term' => $term,
                                 'text' => $matches[0],
                             ], 'site'));
+                            */
+
+                            $variables = $term->getFieldValues();
+                            $variables['term'] = $term;
+                            $variables['text'] = $matches[0];
+
+                            $replacement = preg_replace_callback('/\{\{\s*(.*?)\s*\}\}/',
+                                function ($match) use ($variables, $term) {
+                                    $key = $match[1];
+
+                                    if ($key === 'text') {
+                                        return htmlspecialchars($variables['text'] ?? '',
+                                            ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+                                    }
+
+                                    if ($key === 'term') {
+                                        return htmlspecialchars((string)$term, ENT_QUOTES | ENT_SUBSTITUTE,
+                                            'UTF-8');
+                                    }
+
+                                    if (str_starts_with($key, 'term.')) {
+                                        $field = substr($key, 5);
+                                        if (array_key_exists($field, $variables)) {
+                                            return htmlspecialchars((string)$variables[$field],
+                                                ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+                                        }
+                                    }
+
+                                    // Fallback: Unverändert zurückgeben
+                                    return $match[0];
+                                }, $template);
                         } catch (SyntaxError $e) {
                             Craft::error($e->getMessage(), 'glossary');
                             $replacement = false;
@@ -99,9 +155,48 @@ class Terms extends Component
                          */
                         $variables = $term->getFieldValues();
                         $variables['term'] = $term;
+                        $variables['text'] = $matches[0];
 
                         try {
-                            $this->usedTerms[$term->id] = $view->renderTemplate($glossary->tooltipTemplate, $variables, 'site');
+                            /**
+                             * @warning
+                             * $view->renderTemplate(...) internally triggers the instantiation of Twig\Node\Node,
+                             * which is deprecated since Twig 3.15 and will become abstract in Twig 4.0.
+                             *
+                             * This results in a runtime warning or exception in environments that enforce deprecation policies,
+                             * particularly when Symfony's String component is used with deprecation handling enabled.
+                             *
+                             * Exception thrown:
+                             * Symfony\Component\String\Exception\InvalidArgumentException:
+                             * "Since twig/twig 3.15: Instantiating 'Twig\Node\Node' directly is deprecated; the class will become abstract in 4.0"
+                             *
+                             * Workaround:
+                             * Instead of using Craft's native view rendering (which relies on Craft's Twig environment with custom node visitors),
+                             * we manually:
+                             *  1. Load the template file as a string via file_get_contents()
+                             *  2. Register it into a Twig\ArrayLoader under a key (e.g. 'tooltip')
+                             *  3. Instantiate a clean Twig\Environment with no Craft-specific visitors
+                             *  4. Render the template manually using $twig->render('tooltip', [...])
+                             *
+                             * This avoids triggering deprecated internal behavior and ensures future compatibility with Twig 4.
+                             *
+                             * @see https://github.com/twigphp/Twig/releases/tag/v3.15.0
+                             * @see https://github.com/codemonauts/craft-glossary/issues/13
+                             * @see https://github.com/codemonauts/craft-glossary/issues/13
+                             */
+                            //$this->usedTerms[$term->id] = $view->renderTemplate($glossary->tooltipTemplate, $variables, 'site');
+
+                            $templateString = file_get_contents(Craft::getAlias('@templates/' . $glossary->tooltipTemplate . '.twig'));
+
+                            $loader = new ArrayLoader(['tooltip' => $templateString]);
+                            $twig = new TwigEnvironment($loader, [
+                                'cache' => false,
+                                'autoescape' => 'html',
+                            ]);
+
+                            $rendered = $twig->render('tooltip', $variables);
+
+                            $this->usedTerms[$term->id] = $rendered;
                         } catch (SyntaxError $e) {
                             Craft::error($e->getMessage(), 'glossary');
                         }

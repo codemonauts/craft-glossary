@@ -6,6 +6,7 @@ use codemonauts\glossary\Glossary;
 use Craft;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
+use yii\web\View;
 
 class GlossaryFilter extends AbstractExtension
 {
@@ -44,6 +45,21 @@ class GlossaryFilter extends AbstractExtension
 
         $glossary->registerAssets();
 
-        return $terms->renderTerms($value, $glossary);
+        /**
+        * @warning The original return statement was commented out because it only returned the processed text
+        * without injecting the rendered glossary term tooltips into the HTML output.
+        *
+        * To ensure that the generated tooltip elements (e.g., <div id="term-...">) are included in the final
+        * page markup, we now explicitly register them using `registerHtml()` at the end of the page.
+        *
+        * This change is required to support dynamic tooltips rendered outside the content flow.
+        **/
+        //return $terms->renderTerms($value, $glossary);
+
+        $result = $terms->renderTerms($value, $glossary);
+        Craft::$app->view->registerHtml($terms->getRenderedTerms(), View::POS_END);
+
+        return $result;
+
     }
 }
